@@ -1,3 +1,4 @@
+from re import X
 import numpy as np
 import seaborn as sbn
 import pandas as pd
@@ -15,17 +16,20 @@ csv_data = pd.read_csv("./hw01/data.csv")
 # print(csv_data)
 # In the question2 a, only save the previous 8 column
 pre_eight_column = csv_data.iloc[:,0:8]
+Y = csv_data.iloc[:,[8]]
 # This is to check the slice operation of iloc
-print(pre_eight_column)
-sbn.pairplot(pre_eight_column)
+# print(pre_eight_column)
+
+# sbn.pairplot(pre_eight_column)
 # Getting the pairplot result
 #plt.show()
 ###########################################################################################
 # This is the code for Question2 part b
 ###########################################################################################
-print(type(pre_eight_column))
+# print(type(pre_eight_column))
 np_pre_eight_data = np.array(pre_eight_column)
-print(np_pre_eight_data)
+# checking the result of getting the first 8 columns
+# print(np_pre_eight_data)
 
 average_list = np.mean(np_pre_eight_data,axis=0)
 # print(average_list)
@@ -49,9 +53,11 @@ for i in range(row):
         square_mean_array[i,j] = np.square(zero_mean_array[i,j])
 # print(square_mean_array)
 square_average_list = np.mean(square_mean_array,axis=0)
-print(square_average_list)
+# check the result
+# print(square_average_list)
 sqrt_square_average_list = [np.sqrt(item) for item in square_average_list]
-print(sqrt_square_average_list)
+# check the result
+# print(sqrt_square_average_list)
 
 row,col = np_pre_eight_data.shape
 rescaled_dataset = np.zeros_like(np_pre_eight_data)
@@ -61,8 +67,53 @@ for j in range(col):
         division_by_sqrt = np_pre_eight_data[i,j] / sqrt_current_avg
         rescaled_dataset[i,j] = division_by_sqrt
 
-print(rescaled_dataset)
+# Checking the result of question2 b
+# print(rescaled_dataset)
 
 ###########################################################################################
 # This is the code for Question2 part c
+# Using sklearn ridge to implement c
 ###########################################################################################
+from sklearn.linear_model import Ridge
+alpha = [0.01, 0.1, 0.5, 1, 1.5, 2, 5, 10, 20, 30, 50, 100, 200, 300]
+X = rescaled_dataset
+Y = np.array(Y)
+result = list()
+for item in alpha:
+    regression_q2 = Ridge(item)
+    regression_q2.fit(X,Y)
+    arr = regression_q2.coef_
+    result.append(arr.tolist())
+#print(result)
+puring_result = list()
+for item in result:
+    for i in item:
+        puring_result.append(i)
+#print(puring_result)
+
+draw_y = list()
+np_coefficient = np.array(puring_result)
+print(np_coefficient)
+
+for i in range(col):
+   draw_y.append(np_coefficient[:,i])
+draw_y = np.array(draw_y)
+print(draw_y)
+
+log_lamda = [np.log(item) for item in alpha]
+print(log_lamda)
+
+line1=plt.plot(log_lamda,draw_y[0],'r--',label='type1')
+line2=plt.plot(log_lamda,draw_y[1],'g--',label='type2')
+line3=plt.plot(log_lamda,draw_y[2],'b--',label='type3')
+line4=plt.plot(log_lamda,draw_y[3],'p--',label='type4')
+line5=plt.plot(log_lamda,draw_y[4],'c--',label='type5')
+line6=plt.plot(log_lamda,draw_y[5],'m--',label='type6')
+line7=plt.plot(log_lamda,draw_y[6],'y--',label='type7')
+line8=plt.plot(log_lamda,draw_y[7],'k--',label='type8')
+
+plt.xlabel('log(lamda)')
+plt.ylabel('coefficient')
+plt.legend()
+plt.show()
+
