@@ -20,6 +20,7 @@ Y = csv_data.iloc[:,[8]]
 # This is to check the slice operation of iloc
 # print(pre_eight_column)
 
+# If you want to check the figure, using the following code
 # sbn.pairplot(pre_eight_column)
 # Getting the pairplot result
 #plt.show()
@@ -85,6 +86,7 @@ for item in alpha:
     arr = regression_q2.coef_
     result.append(arr.tolist())
 #print(result)
+
 puring_result = list()
 for item in result:
     for i in item:
@@ -103,17 +105,32 @@ print(draw_y)
 log_lamda = [np.log(item) for item in alpha]
 print(log_lamda)
 
-line1=plt.plot(log_lamda,draw_y[0],'r--',label='type1')
-line2=plt.plot(log_lamda,draw_y[1],'g--',label='type2')
-line3=plt.plot(log_lamda,draw_y[2],'b--',label='type3')
-line4=plt.plot(log_lamda,draw_y[3],'p--',label='type4')
-line5=plt.plot(log_lamda,draw_y[4],'c--',label='type5')
-line6=plt.plot(log_lamda,draw_y[5],'m--',label='type6')
-line7=plt.plot(log_lamda,draw_y[6],'y--',label='type7')
-line8=plt.plot(log_lamda,draw_y[7],'k--',label='type8')
+# Draw 8 lines to check the result
+# line1=plt.plot(log_lamda,draw_y[0],'red',label='line1')
+# line2=plt.plot(log_lamda,draw_y[1],'brown',label='line2')
+# line3=plt.plot(log_lamda,draw_y[2],'green',label='line3')
+# line4=plt.plot(log_lamda,draw_y[3],'blue',label='line4')
+# line5=plt.plot(log_lamda,draw_y[4],'orange',label='line5')
+# line6=plt.plot(log_lamda,draw_y[5],'pink',label='line6')
+# line7=plt.plot(log_lamda,draw_y[6],'purple',label='line7')
+# line8=plt.plot(log_lamda,draw_y[7],'grey',label='line8')
+# plt.xlabel('log(lamda)')
+# plt.ylabel('coefficient')
+# plt.legend()
+# plt.show()
 
-plt.xlabel('log(lamda)')
-plt.ylabel('coefficient')
-plt.legend()
-plt.show()
-
+###########################################################################################
+# This is the code for Question2 part d
+###########################################################################################
+print(row)
+counter = 0
+for lamda in range(0,501,1):
+    print(i/10)
+    for pointer in range(0,38):
+        # 创建一个新的array 长度37 进行拼接存储
+        # 0-i-1 i+1-38
+        Training_X = 
+        Training_Y = 
+        Testing_X = rescaled_dataset[pointer]
+        Testing_Y = Y[pointer]
+print(counter)
