@@ -6,3 +6,5 @@ import pandas as pd
 csv_data = pd.read_csv("./data.csv")
 # print the result of reading
 print(csv_data)
+
+sbn.pairplot(csv_data)
