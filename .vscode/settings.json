@@ -1,3 +1,4 @@
 {
-    "cwd": "${fileDirname}"
+    "cwd": "${fileDirname}",
+    "python.pythonPath": "E:\\Anaconda\\envs\\tf24\\python.exe"
 }
