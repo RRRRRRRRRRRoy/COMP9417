@@ -95,15 +95,15 @@ for item in result:
 
 draw_y = list()
 np_coefficient = np.array(puring_result)
-print(np_coefficient)
+# print(np_coefficient)
 
 for i in range(col):
    draw_y.append(np_coefficient[:,i])
 draw_y = np.array(draw_y)
-print(draw_y)
+# print(draw_y)
 
 log_lamda = [np.log(item) for item in alpha]
-print(log_lamda)
+# print(log_lamda)
 
 # Draw 8 lines to check the result
 # line1=plt.plot(log_lamda,draw_y[0],'red',label='line1')
@@ -114,7 +114,7 @@ print(log_lamda)
 # line6=plt.plot(log_lamda,draw_y[5],'pink',label='line6')
 # line7=plt.plot(log_lamda,draw_y[6],'purple',label='line7')
 # line8=plt.plot(log_lamda,draw_y[7],'grey',label='line8')
-# plt.xlabel('log(lamda)')
+# plt.xlabel('log(lambda)')
 # plt.ylabel('coefficient')
 # plt.legend()
 # plt.show()
@@ -122,15 +122,124 @@ print(log_lamda)
 ###########################################################################################
 # This is the code for Question2 part d
 ###########################################################################################
-print(row)
-counter = 0
+# print(row)
+Error_list = list()
+lambda_list = list()
 for lamda in range(0,501,1):
-    print(i/10)
-    for pointer in range(0,38):
-        # 创建一个新的array 长度37 进行拼接存储
-        # 0-i-1 i+1-38
-        Training_X = 
-        Training_Y = 
-        Testing_X = rescaled_dataset[pointer]
-        Testing_Y = Y[pointer]
-print(counter)
+    #print(i/10)
+    current_lamda = lamda/10
+    lambda_list.append(current_lamda)
+    Error = 0
+    for pointer in range(0,row):
+        temp_X = np.copy(rescaled_dataset)
+        temp_Y = np.copy(Y)
+        Testing_X = temp_X[pointer]
+        Testing_Y = temp_Y[pointer]
+        Training_X = np.delete(temp_X,pointer,0)
+        Training_Y = np.delete(temp_Y,pointer,0)
+
+        
+        reg_q2_d = Ridge(current_lamda)
+        reg_q2_d.fit(Training_X,Training_Y)
+        predict_y = reg_q2_d.predict([Testing_X])
+        error = np.square(predict_y-Testing_Y)
+        # print(error)
+        Error += error
+    Error_list.append(Error/row)
+
+rescaled_Error_list = list()
+for item in Error_list:
+    for itm in item:
+        for i in itm:
+            rescaled_Error_list.append(i)
+# Checking the result of resizing the list
+# print(rescaled_Error_list)
+
+min_error_value = min(rescaled_Error_list)
+max_error_value = max(rescaled_Error_list)
+min_index = rescaled_Error_list.index(min_error_value)
+max_index = rescaled_Error_list.index(max_error_value)
+min_lambda = lambda_list[min_index]
+max_lambda = lambda_list[max_index]
+
+# printing the result of min and max error value
+# print(f'The minimum error value: {min_error_value}. The current lambda value : {min_lambda}')
+# print(f'The maximum error value: {max_error_value}. The current lambda value : {max_lambda}')
+
+# These part of code is to printing the plot of question 2d
+# Question_2d_plot=plt.plot(lambda_list,rescaled_Error_list,'red',label='line')
+# plt.xlabel('lambda range')
+# plt.ylabel('Error average')
+# plt.legend()
+# plt.show()
+
+# This is to compare with the standard linear regression
+from sklearn.linear_model import LinearRegression
+std_regression = LinearRegression()
+model = std_regression.fit(X,Y)
+predict_std_y = model.predict(X)
+total_difference = 0
+for i in range(row):
+    current_square_difference = np.square(Y[i]-predict_std_y[i])
+    total_difference += current_square_difference
+
+avg_difference = total_difference/row
+# traditionally better than the previous max_error_value 1085<1442
+# print(avg_difference)
+
+###########################################################################################
+# This is the code for Question2 part e
+###########################################################################################
+from sklearn.linear_model import Lasso
+alpha = [0.01, 0.1, 0.5, 1, 1.5, 2, 5, 10, 20, 30, 50, 100, 200, 300]
+result_lasso = list()
+for item in alpha:
+    regression_lasso = Lasso(item)
+    regression_lasso.fit(X,Y)
+    lasso_coefficient = regression_lasso.coef_
+    result_lasso.append(lasso_coefficient.tolist())
+#print(result_lasso)
+
+np_coefficient_lasso = np.array(result_lasso)
+print(np_coefficient_lasso)
+
+draw_y_lasso = list()
+for i in range(col):
+   draw_y_lasso.append(np_coefficient_lasso[:,i])
+np_draw_y_lasso = np.array(draw_y_lasso)
+#print(np_draw_y_lasso)
+
+log_lamda_lasso = [np.log(item) for item in alpha]
+
+# Draw 8 lines to check the result
+# line1_lasso=plt.plot(log_lamda_lasso,np_draw_y_lasso[0],'red',label='line1_lasso')
+# line2_lasso=plt.plot(log_lamda_lasso,np_draw_y_lasso[1],'brown',label='line2_lasso')
+# line3_lasso=plt.plot(log_lamda_lasso,np_draw_y_lasso[2],'green',label='line3_lasso')
+# line4_lasso=plt.plot(log_lamda_lasso,np_draw_y_lasso[3],'blue',label='line4_lasso')
+# line5_lasso=plt.plot(log_lamda_lasso,np_draw_y_lasso[4],'orange',label='line5_lasso')
+# line6_lasso=plt.plot(log_lamda_lasso,np_draw_y_lasso[5],'pink',label='line6_lasso')
+# line7_lasso=plt.plot(log_lamda_lasso,np_draw_y_lasso[6],'purple',label='line7_lasso')
+# line8_lasso=plt.plot(log_lamda_lasso,np_draw_y_lasso[7],'grey',label='line8_lasso')
+# plt.xlabel('log(lambda)')
+# plt.ylabel('coefficient')
+# plt.legend()
+# plt.show()
+
+###########################################################################################
+# This is the code for Question2 part f
+###########################################################################################
+Error_list_lasso = list()
+lambda_list_lasso = list()
+for lamda_lasso in range(0,201,1):
+    #print(i/10)
+    current_lamda_lasso = lamda_lasso/10
+    lambda_list_lasso.append(current_lamda_lasso)
+    Error_lasso = 0
+    for pointer_lasso in range(0,row):
+        temp_X_lasso = np.copy(rescaled_dataset)
+        temp_Y_lasso = np.copy(Y)
+        Testing_X_lasso = temp_X_lasso[pointer_lasso]
+        Testing_Y_lasso = temp_Y_lasso[pointer_lasso]
+        Training_X_lasso = np.delete(temp_X_lasso,pointer_lasso,0)
+        Training_Y_lasso = np.delete(temp_Y_lasso,pointer_lasso,0)
+
