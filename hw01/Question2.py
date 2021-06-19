@@ -242,4 +242,26 @@ for lamda_lasso in range(0,201,1):
         Testing_Y_lasso = temp_Y_lasso[pointer_lasso]
         Training_X_lasso = np.delete(temp_X_lasso,pointer_lasso,0)
         Training_Y_lasso = np.delete(temp_Y_lasso,pointer_lasso,0)
+        
+        reg_q2f_lasso = Lasso(current_lamda_lasso)
+        reg_q2f_lasso.fit(Training_X_lasso,Training_Y_lasso)
+        predict_y_lasso = reg_q2f_lasso.predict([Testing_X_lasso])
+        error_lasso = np.square(predict_y_lasso-Testing_Y_lasso)
+        # print(error)
+        Error_lasso += error_lasso
+    Error_list_lasso.append(Error_lasso/row)
+# print(Error_list_lasso)
 
+puring_error_lasso = list()
+for item in Error_list_lasso:
+    for i in item:
+        puring_error_lasso.append(i)
+print(puring_error_lasso)
+print(len(puring_error_lasso))
+
+# These part of code is to printing the plot of question 2f
+Question_2f_plot=plt.plot(lambda_list_lasso,puring_error_lasso,'red',label='line_lasso')
+plt.xlabel('lambda range(lasso)')
+plt.ylabel('Error average(lasso)')
+plt.legend()
+plt.show()
