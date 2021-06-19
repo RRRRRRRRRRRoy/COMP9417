@@ -259,6 +259,18 @@ for item in Error_list_lasso:
 print(puring_error_lasso)
 print(len(puring_error_lasso))
 
+min_error_value_lasso = min(puring_error_lasso)
+max_error_value_lasso = max(puring_error_lasso)
+min_index_lasso = puring_error_lasso.index(min_error_value_lasso)
+max_index_lasso = puring_error_lasso.index(max_error_value_lasso)
+min_lambda_lasso = lambda_list_lasso[min_index_lasso]
+max_lambda_lasso = lambda_list_lasso[max_index_lasso]
+
+# The minimum error value of lasso: 1586.6715081806428. The current lambda value of lasso : 5.5
+# The maximum error value of lasso: 1973.8286526002037. The current lambda value of lasso : 0.0 
+print(f'The minimum error value of lasso: {min_error_value_lasso}. The current lambda value of lasso : {min_lambda_lasso}')
+print(f'The maximum error value of lasso: {max_error_value_lasso}. The current lambda value of lasso : {max_lambda_lasso}')
+
 # These part of code is to printing the plot of question 2f
 Question_2f_plot=plt.plot(lambda_list_lasso,puring_error_lasso,'red',label='line_lasso')
 plt.xlabel('lambda range(lasso)')
