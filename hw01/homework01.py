@@ -1,5 +1,7 @@
-# The difference between lasso and Ridge
+###########################################################################################
+# The difference between lasso and Ridge (import for writing hw1 report)
 # Source: https://www.geeksforgeeks.org/lasso-vs-ridge-vs-elastic-net-ml/
+###########################################################################################
 import numpy as np
 import seaborn as sbn
 import pandas as pd
@@ -78,11 +80,12 @@ square_mean_array_sqrt = [np.sqrt(item) for item in square_mean_array_sum]
 # print(square_mean_array_sqrt)
 
 # This part of code is to getting the rescaled dataset
+num_sqrt = np.sqrt(38)
 rescaled_dataset = np.zeros_like(zero_mean_array)
 for j in range(col):
     current_sqrt_2b = square_mean_array_sqrt[j]
     for i in range(row):
-        rescaled_dataset[i,j] = zero_mean_array[i,j] * np.sqrt(38) / current_sqrt_2b
+        rescaled_dataset[i,j] = zero_mean_array[i,j] * num_sqrt / current_sqrt_2b
 print("This is the rescaled dataset of 2b")
 print(rescaled_dataset)
 print()
@@ -192,6 +195,7 @@ for lamda in range(0,501,1):
         Training_X = np.delete(temp_X,pointer,0)
         Training_Y = np.delete(temp_Y,pointer,0)
 
+        # Start training the model by using Ridge
         # Using the lambda from 0-50 to set Ridge
         reg_q2_d = Ridge(current_lamda)
         # Training
@@ -202,12 +206,15 @@ for lamda in range(0,501,1):
         error = np.square(predict_y-Testing_Y)
         # print(error)
         Error += error
+    # Adding the error to the list
     Error_list.append(Error/row)
 
+# Rescale the error list [[[]]]
 rescaled_Error_list = list()
 for item in Error_list:
     for itm in item:
         for i in itm:
+            # Store the data into a list
             rescaled_Error_list.append(i)
 # Checking the result of resizing the list
 # print(rescaled_Error_list)
@@ -227,8 +234,8 @@ print("Question 2d result:")
 # printing the result of min and max error value
 # The minimum error value: 1442.6982227952926. The current lambda value : 22.3
 # The maximum error value: 1975.4147393421708. The current lambda value : 0.0
-print(f'The minimum error value: {min_error_value}. The current lambda value : {min_lambda}')
-print(f'The maximum error value: {max_error_value}. The current lambda value : {max_lambda}')
+print(f'The minimum error value of Ridge: {min_error_value}. The current lambda value of Ridge: {min_lambda}')
+print(f'The maximum error value of Ridge: {max_error_value}. The current lambda value of Ridge: {max_lambda}')
 
 # These part of code is to printing the plot of question 2d
 Question_2d_plot=plt.plot(lambda_list,rescaled_Error_list,'red',label='line')
@@ -239,9 +246,13 @@ plt.show()
 
 # This is to compare with the standard linear regression
 from sklearn.linear_model import LinearRegression
+# Notice: Here is to create a standard linear regression function
 std_regression = LinearRegression()
+# Using the X Y to do the training
 model = std_regression.fit(X,Y)
+# Same way in predicting
 predict_std_y = model.predict(X)
+# Getting the difference and then doing the average
 total_difference = 0
 for i in range(row):
     current_square_difference = np.square(Y[i]-predict_std_y[i])
@@ -249,7 +260,8 @@ for i in range(row):
 
 avg_difference = total_difference/row
 # traditionally better than the previous max_error_value 1085<1442
-# result [1085.8364079]
+# result [1085.8364079] This result is to compare with the LOOCV result
+# Better than LOOCV
 print(f"standard linear regression: {avg_difference}")
 print()
 ###########################################################################################
@@ -260,12 +272,16 @@ print()
 # Source: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html
 ###########################################################################################
 from sklearn.linear_model import Lasso
+# This list is from the instruction of hw1
 alpha = [0.01, 0.1, 0.5, 1, 1.5, 2, 5, 10, 20, 30, 50, 100, 200, 300]
 result_lasso = list()
 for item in alpha:
+    # Creating the Lasso model
     regression_lasso = Lasso(item)
+    # Same way in fitting and training
     regression_lasso.fit(X,Y)
     lasso_coefficient = regression_lasso.coef_
+    # Notice the shape of the result
     result_lasso.append(lasso_coefficient.tolist())
 #print(result_lasso)
 
@@ -278,6 +294,8 @@ for i in range(col):
 np_draw_y_lasso = np.array(draw_y_lasso)
 #print(np_draw_y_lasso)
 
+# Here is similar to question c
+# Notice using np.log to get the log result(X-axsis)
 log_lamda_lasso = [np.log(item) for item in alpha]
 
 # Draw 8 lines to check the result
@@ -329,12 +347,16 @@ for lamda_lasso in range(0,201,1):
         error_lasso = np.square(predict_y_lasso-Testing_Y_lasso)
         # print(error)
         Error_lasso += error_lasso
+    # Getting the average error of lasso -> list 
     Error_list_lasso.append(Error_lasso/row)
 # print(Error_list_lasso)
 
+# here is to change the type of the result [[]]
+# Puring the result for the following figure plot
 puring_error_lasso = list()
 for item in Error_list_lasso:
     for i in item:
+        # Store the data into list for lasso result
         puring_error_lasso.append(i)
 # print(puring_error_lasso)
 # print(len(puring_error_lasso))
