@@ -59,7 +59,6 @@ for j in range(col):
     for i in range(row):
         zero_m_result = np_pre_eight_data[i,j] - current_avg
         zero_mean_array[i,j] = zero_m_result
-
 # Checking the average result of 0-mean
 # print(zero_mean_array)
 
@@ -72,31 +71,34 @@ for i in range(row):
         square_mean_array[i,j] = np.square(zero_mean_array[i,j])
 # print(square_mean_array)
 
-# Doing the np.mean after getting the square of each column
-square_average_list = np.mean(square_mean_array,axis=0)
-# check the result
-# print(square_average_list)
+square_mean_array_sum = np.sum(square_mean_array,axis=0)
+# print(square_mean_array_sum)
 
-# Doing the sqrt for each elements in square_average_list
-sqrt_square_average_list = [np.sqrt(item) for item in square_average_list]
-# check the result
-# print(sqrt_square_average_list)
+square_mean_array_sqrt = [np.sqrt(item) for item in square_mean_array_sum]
+# print(square_mean_array_sqrt)
 
-# For each original data, divide it by using the sqrt_current_avg
-row,col = np_pre_eight_data.shape
-# Store the result of question2 b
-rescaled_dataset = np.zeros_like(np_pre_eight_data)
-# Tricky thing go col first
+# This part of code is to getting the rescaled dataset
+rescaled_dataset = np.zeros_like(zero_mean_array)
 for j in range(col):
-    sqrt_current_avg = sqrt_square_average_list[j]
-    # for each element in the same row / sqrt_current_avg
+    current_sqrt_2b = square_mean_array_sqrt[j]
     for i in range(row):
-        division_by_sqrt = np_pre_eight_data[i,j] / sqrt_current_avg
-        rescaled_dataset[i,j] = division_by_sqrt
+        rescaled_dataset[i,j] = zero_mean_array[i,j] * np.sqrt(38) / current_sqrt_2b
+print("This is the rescaled dataset of 2b")
+print(rescaled_dataset)
+print()
+
+# This is to check the result of the rescaled dataset
+square_test = np.zeros_like(rescaled_dataset)
+for i in range(row):
+    for j in range(col):
+        # Using the square to get the square matrix
+        square_test[i,j] = np.square(rescaled_dataset[i,j])
+test_result_of_n = np.sum(square_test,axis=0)
+# print(test_result_of_n)
 
 print("Question 2b result:")
 # Checking the result of question2 b
-print(rescaled_dataset)
+print(f"This is the result of checking(same with the number n) n: {test_result_of_n}")
 print()
 ###########################################################################################
 # This is the code for Question2 part c
@@ -254,7 +256,6 @@ print()
 # This is the code for Question2 part e
 # This part of code is similar to part c
 #
-#
 # How to use Lasso
 # Source: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html
 ###########################################################################################
@@ -335,8 +336,8 @@ puring_error_lasso = list()
 for item in Error_list_lasso:
     for i in item:
         puring_error_lasso.append(i)
-print(puring_error_lasso)
-print(len(puring_error_lasso))
+# print(puring_error_lasso)
+# print(len(puring_error_lasso))
 
 # Getting the min and max error value of lasso
 min_error_value_lasso = min(puring_error_lasso)
@@ -348,6 +349,7 @@ max_index_lasso = puring_error_lasso.index(max_error_value_lasso)
 min_lambda_lasso = lambda_list_lasso[min_index_lasso]
 max_lambda_lasso = lambda_list_lasso[max_index_lasso]
 
+print()
 print("Question 2f result:")
 # The minimum error value of lasso: 1586.6715081806428. The current lambda value of lasso : 5.5
 # The maximum error value of lasso: 1973.8286526002037. The current lambda value of lasso : 0.0 
