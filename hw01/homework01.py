@@ -2,6 +2,9 @@
 # The difference between lasso and Ridge (import for writing hw1 report)
 # Source: https://www.geeksforgeeks.org/lasso-vs-ridge-vs-elastic-net-ml/
 ###########################################################################################
+from sklearn.linear_model import Lasso
+from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Ridge
 import numpy as np
 import seaborn as sbn
 import pandas as pd
@@ -25,8 +28,8 @@ csv_data = pd.read_csv("./hw01/data.csv")
 # Checking the data reading
 # print(csv_data)
 # In the question2 a, only save the previous 8 column
-pre_eight_column = csv_data.iloc[:,0:8]
-Y = csv_data.iloc[:,[8]]
+pre_eight_column = csv_data.iloc[:, 0:8]
+Y = csv_data.iloc[:, [8]]
 # This is to check the slice operation of iloc
 # print(pre_eight_column)
 
@@ -36,7 +39,7 @@ sbn.pairplot(pre_eight_column)
 plt.show()
 ###########################################################################################
 # This is the code for Question2 part b
-# 
+#
 # Source used in part b
 # How to use np.mean to get the avg for row and col
 # Source: https://www.geeksforgeeks.org/numpy-mean-in-python/
@@ -49,18 +52,18 @@ np_pre_eight_data = np.array(pre_eight_column)
 # checking the result of getting the first 8 columns
 # print(np_pre_eight_data)
 
-average_list = np.mean(np_pre_eight_data,axis=0)
+average_list = np.mean(np_pre_eight_data, axis=0)
 # print(average_list)
 zero_mean_array = np.zeros_like(np_pre_eight_data)
 
 # 0-mean function
 # For each element in the same column, minus its average
-row,col = np_pre_eight_data.shape
+row, col = np_pre_eight_data.shape
 for j in range(col):
     current_avg = average_list[j]
     for i in range(row):
-        zero_m_result = np_pre_eight_data[i,j] - current_avg
-        zero_mean_array[i,j] = zero_m_result
+        zero_m_result = np_pre_eight_data[i, j] - current_avg
+        zero_mean_array[i, j] = zero_m_result
 # Checking the average result of 0-mean
 # print(zero_mean_array)
 
@@ -70,10 +73,10 @@ square_mean_array = np.zeros_like(zero_mean_array)
 for i in range(row):
     for j in range(col):
         # Using the square to get the square matrix
-        square_mean_array[i,j] = np.square(zero_mean_array[i,j])
+        square_mean_array[i, j] = np.square(zero_mean_array[i, j])
 # print(square_mean_array)
 
-square_mean_array_sum = np.sum(square_mean_array,axis=0)
+square_mean_array_sum = np.sum(square_mean_array, axis=0)
 # print(square_mean_array_sum)
 
 square_mean_array_sqrt = [np.sqrt(item) for item in square_mean_array_sum]
@@ -85,7 +88,8 @@ rescaled_dataset = np.zeros_like(zero_mean_array)
 for j in range(col):
     current_sqrt_2b = square_mean_array_sqrt[j]
     for i in range(row):
-        rescaled_dataset[i,j] = zero_mean_array[i,j] * num_sqrt / current_sqrt_2b
+        rescaled_dataset[i, j] = zero_mean_array[i, j] * \
+            num_sqrt / current_sqrt_2b
 print("This is the rescaled dataset of 2b")
 print(rescaled_dataset)
 print()
@@ -95,17 +99,18 @@ square_test = np.zeros_like(rescaled_dataset)
 for i in range(row):
     for j in range(col):
         # Using the square to get the square matrix
-        square_test[i,j] = np.square(rescaled_dataset[i,j])
-test_result_of_n = np.sum(square_test,axis=0)
+        square_test[i, j] = np.square(rescaled_dataset[i, j])
+test_result_of_n = np.sum(square_test, axis=0)
 # print(test_result_of_n)
 
 print("Question 2b result:")
 # Checking the result of question2 b
-print(f"This is the result of checking(same with the number n) n: {test_result_of_n}")
+print(
+    f"This is the result of checking(same with the number n) n: {test_result_of_n}")
 print()
 ###########################################################################################
 # This is the code for Question2 part c
-# 
+#
 # Source used in part c
 # Using sklearn ridge to implement c
 # Source: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html
@@ -114,14 +119,13 @@ print()
 # How to draw line graph
 # Source: https://jakevdp.github.io/PythonDataScienceHandbook/04.01-simple-line-plots.html
 ###########################################################################################
-from sklearn.linear_model import Ridge
 alpha = [0.01, 0.1, 0.5, 1, 1.5, 2, 5, 10, 20, 30, 50, 100, 200, 300]
 X = rescaled_dataset
 Y = np.array(Y)
 result = list()
 for item in alpha:
     regression_q2 = Ridge(item)
-    regression_q2.fit(X,Y)
+    regression_q2.fit(X, Y)
     arr = regression_q2.coef_
     result.append(arr.tolist())
 # Testing the result
@@ -140,7 +144,7 @@ np_coefficient = np.array(puring_result)
 # print(np_coefficient)
 
 for i in range(col):
-   draw_y.append(np_coefficient[:,i])
+    draw_y.append(np_coefficient[:, i])
 draw_y = np.array(draw_y)
 # Testing the draw_y
 # print(draw_y)
@@ -153,14 +157,14 @@ log_lamda = [np.log(item) for item in alpha]
 # If you want to check the result please cancel the annotation
 # Draw 8 lines to check the result
 # Notice here setting the marker to get the point on the graph
-line1=plt.plot(log_lamda,draw_y[0],'red',marker='o',label='line1')
-line2=plt.plot(log_lamda,draw_y[1],'brown',marker='o',label='line2')
-line3=plt.plot(log_lamda,draw_y[2],'green',marker='o',label='line3')
-line4=plt.plot(log_lamda,draw_y[3],'blue',marker='o',label='line4')
-line5=plt.plot(log_lamda,draw_y[4],'orange',marker='o',label='line5')
-line6=plt.plot(log_lamda,draw_y[5],'pink',marker='o',label='line6')
-line7=plt.plot(log_lamda,draw_y[6],'purple',marker='o',label='line7')
-line8=plt.plot(log_lamda,draw_y[7],'grey',marker='o',label='line8')
+line1 = plt.plot(log_lamda, draw_y[0], 'red', marker='o', label='line1')
+line2 = plt.plot(log_lamda, draw_y[1], 'brown', marker='o', label='line2')
+line3 = plt.plot(log_lamda, draw_y[2], 'green', marker='o', label='line3')
+line4 = plt.plot(log_lamda, draw_y[3], 'blue', marker='o', label='line4')
+line5 = plt.plot(log_lamda, draw_y[4], 'orange', marker='o', label='line5')
+line6 = plt.plot(log_lamda, draw_y[5], 'pink', marker='o', label='line6')
+line7 = plt.plot(log_lamda, draw_y[6], 'purple', marker='o', label='line7')
+line8 = plt.plot(log_lamda, draw_y[7], 'grey', marker='o', label='line8')
 plt.xlabel('log(lambda)')
 plt.ylabel('coefficient')
 plt.legend()
@@ -168,23 +172,23 @@ plt.show()
 
 ###########################################################################################
 # This is the code for Question2 part d
-# 
+#
 # Source used in part d
 # How to use np.copy(hardcopy different with view)
 # Source: https://numpy.org/doc/stable/reference/generated/numpy.copy.html
 # How to use the Ridge do the predict
-# Source: https://machinelearningmastery.com/ridge-regression-with-python/ 
+# Source: https://machinelearningmastery.com/ridge-regression-with-python/
 ###########################################################################################
 # print(row)
 Error_list = list()
 lambda_list = list()
-for lamda in range(0,501,1):
-    #print(i/10)
+for lamda in range(0, 501, 1):
+    # print(i/10)
     current_lamda = lamda/10
     lambda_list.append(current_lamda)
     Error = 0
     # LOOCV method
-    for pointer in range(0,row):
+    for pointer in range(0, row):
         # Getting the matrix
         temp_X = np.copy(rescaled_dataset)
         temp_Y = np.copy(Y)
@@ -192,14 +196,14 @@ for lamda in range(0,501,1):
         Testing_X = temp_X[pointer]
         Testing_Y = temp_Y[pointer]
         # Removing the data from the array
-        Training_X = np.delete(temp_X,pointer,0)
-        Training_Y = np.delete(temp_Y,pointer,0)
+        Training_X = np.delete(temp_X, pointer, 0)
+        Training_Y = np.delete(temp_Y, pointer, 0)
 
         # Start training the model by using Ridge
         # Using the lambda from 0-50 to set Ridge
         reg_q2_d = Ridge(current_lamda)
         # Training
-        reg_q2_d.fit(Training_X,Training_Y)
+        reg_q2_d.fit(Training_X, Training_Y)
         # Notice here adding [] avoiding the shape error
         predict_y = reg_q2_d.predict([Testing_X])
         # Getting the error
@@ -234,22 +238,24 @@ print("Question 2d result:")
 # printing the result of min and max error value
 # The minimum error value: 1442.6982227952926. The current lambda value : 22.3
 # The maximum error value: 1975.4147393421708. The current lambda value : 0.0
-print(f'The minimum error value of Ridge: {min_error_value}. The current lambda value of Ridge: {min_lambda}')
-print(f'The maximum error value of Ridge: {max_error_value}. The current lambda value of Ridge: {max_lambda}')
+print(
+    f'The minimum error value of Ridge: {min_error_value}. The current lambda value of Ridge: {min_lambda}')
+print(
+    f'The maximum error value of Ridge: {max_error_value}. The current lambda value of Ridge: {max_lambda}')
 
 # These part of code is to printing the plot of question 2d
-Question_2d_plot=plt.plot(lambda_list,rescaled_Error_list,'red',label='line')
+Question_2d_plot = plt.plot(
+    lambda_list, rescaled_Error_list, 'red', label='line')
 plt.xlabel('lambda range')
 plt.ylabel('Error average')
 plt.legend()
 plt.show()
 
 # This is to compare with the standard linear regression
-from sklearn.linear_model import LinearRegression
 # Notice: Here is to create a standard linear regression function
 std_regression = LinearRegression()
 # Using the X Y to do the training
-model = std_regression.fit(X,Y)
+model = std_regression.fit(X, Y)
 # Same way in predicting
 predict_std_y = model.predict(X)
 # Getting the difference and then doing the average
@@ -271,7 +277,6 @@ print()
 # How to use Lasso
 # Source: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html
 ###########################################################################################
-from sklearn.linear_model import Lasso
 # This list is from the instruction of hw1
 alpha = [0.01, 0.1, 0.5, 1, 1.5, 2, 5, 10, 20, 30, 50, 100, 200, 300]
 result_lasso = list()
@@ -279,20 +284,20 @@ for item in alpha:
     # Creating the Lasso model
     regression_lasso = Lasso(item)
     # Same way in fitting and training
-    regression_lasso.fit(X,Y)
+    regression_lasso.fit(X, Y)
     lasso_coefficient = regression_lasso.coef_
     # Notice the shape of the result
     result_lasso.append(lasso_coefficient.tolist())
-#print(result_lasso)
+# print(result_lasso)
 
 np_coefficient_lasso = np.array(result_lasso)
 # print(np_coefficient_lasso)
 
 draw_y_lasso = list()
 for i in range(col):
-   draw_y_lasso.append(np_coefficient_lasso[:,i])
+    draw_y_lasso.append(np_coefficient_lasso[:, i])
 np_draw_y_lasso = np.array(draw_y_lasso)
-#print(np_draw_y_lasso)
+# print(np_draw_y_lasso)
 
 # Here is similar to question c
 # Notice using np.log to get the log result(X-axsis)
@@ -300,14 +305,22 @@ log_lamda_lasso = [np.log(item) for item in alpha]
 
 # Draw 8 lines to check the result
 # Notice here setting the marker to get the point on the graph
-line1_lasso=plt.plot(log_lamda_lasso,np_draw_y_lasso[0],'red',marker='o',label='line1_lasso')
-line2_lasso=plt.plot(log_lamda_lasso,np_draw_y_lasso[1],'brown',marker='o',label='line2_lasso')
-line3_lasso=plt.plot(log_lamda_lasso,np_draw_y_lasso[2],'green',marker='o',label='line3_lasso')
-line4_lasso=plt.plot(log_lamda_lasso,np_draw_y_lasso[3],'blue',marker='o',label='line4_lasso')
-line5_lasso=plt.plot(log_lamda_lasso,np_draw_y_lasso[4],'orange',marker='o',label='line5_lasso')
-line6_lasso=plt.plot(log_lamda_lasso,np_draw_y_lasso[5],'pink',marker='o',label='line6_lasso')
-line7_lasso=plt.plot(log_lamda_lasso,np_draw_y_lasso[6],'purple',marker='o',label='line7_lasso')
-line8_lasso=plt.plot(log_lamda_lasso,np_draw_y_lasso[7],'grey',marker='o',label='line8_lasso')
+line1_lasso = plt.plot(
+    log_lamda_lasso, np_draw_y_lasso[0], 'red', marker='o', label='line1_lasso')
+line2_lasso = plt.plot(
+    log_lamda_lasso, np_draw_y_lasso[1], 'brown', marker='o', label='line2_lasso')
+line3_lasso = plt.plot(
+    log_lamda_lasso, np_draw_y_lasso[2], 'green', marker='o', label='line3_lasso')
+line4_lasso = plt.plot(
+    log_lamda_lasso, np_draw_y_lasso[3], 'blue', marker='o', label='line4_lasso')
+line5_lasso = plt.plot(
+    log_lamda_lasso, np_draw_y_lasso[4], 'orange', marker='o', label='line5_lasso')
+line6_lasso = plt.plot(
+    log_lamda_lasso, np_draw_y_lasso[5], 'pink', marker='o', label='line6_lasso')
+line7_lasso = plt.plot(
+    log_lamda_lasso, np_draw_y_lasso[6], 'purple', marker='o', label='line7_lasso')
+line8_lasso = plt.plot(
+    log_lamda_lasso, np_draw_y_lasso[7], 'grey', marker='o', label='line8_lasso')
 plt.xlabel('log(lambda)')
 plt.ylabel('coefficient')
 plt.legend(fontsize=8)
@@ -320,13 +333,13 @@ plt.show()
 Error_list_lasso = list()
 lambda_list_lasso = list()
 # Notice here the question is setting from 0 to 20
-for lamda_lasso in range(0,201,1):
-    #print(i/10)
+for lamda_lasso in range(0, 201, 1):
+    # print(i/10)
     current_lamda_lasso = lamda_lasso/10
     lambda_list_lasso.append(current_lamda_lasso)
     Error_lasso = 0
     # LOOCV method
-    for pointer_lasso in range(0,row):
+    for pointer_lasso in range(0, row):
         # Copy the matrix
         temp_X_lasso = np.copy(rescaled_dataset)
         temp_Y_lasso = np.copy(Y)
@@ -334,20 +347,20 @@ for lamda_lasso in range(0,201,1):
         Testing_X_lasso = temp_X_lasso[pointer_lasso]
         Testing_Y_lasso = temp_Y_lasso[pointer_lasso]
         # Removing the test data
-        Training_X_lasso = np.delete(temp_X_lasso,pointer_lasso,0)
-        Training_Y_lasso = np.delete(temp_Y_lasso,pointer_lasso,0)
-        
+        Training_X_lasso = np.delete(temp_X_lasso, pointer_lasso, 0)
+        Training_Y_lasso = np.delete(temp_Y_lasso, pointer_lasso, 0)
+
         # Setting the Lasso model
         reg_q2f_lasso = Lasso(current_lamda_lasso)
         # Training the model
-        reg_q2f_lasso.fit(Training_X_lasso,Training_Y_lasso)
+        reg_q2f_lasso.fit(Training_X_lasso, Training_Y_lasso)
         # Doing the prediction
         predict_y_lasso = reg_q2f_lasso.predict([Testing_X_lasso])
         # Calculating the error
         error_lasso = np.square(predict_y_lasso-Testing_Y_lasso)
         # print(error)
         Error_lasso += error_lasso
-    # Getting the average error of lasso -> list 
+    # Getting the average error of lasso -> list
     Error_list_lasso.append(Error_lasso/row)
 # print(Error_list_lasso)
 
@@ -374,13 +387,16 @@ max_lambda_lasso = lambda_list_lasso[max_index_lasso]
 print()
 print("Question 2f result:")
 # The minimum error value of lasso: 1586.6715081806428. The current lambda value of lasso : 5.5
-# The maximum error value of lasso: 1973.8286526002037. The current lambda value of lasso : 0.0 
-print(f'The minimum error value of lasso: {min_error_value_lasso}. The current lambda value of lasso : {min_lambda_lasso}')
-print(f'The maximum error value of lasso: {max_error_value_lasso}. The current lambda value of lasso : {max_lambda_lasso}')
+# The maximum error value of lasso: 1973.8286526002037. The current lambda value of lasso : 0.0
+print(
+    f'The minimum error value of lasso: {min_error_value_lasso}. The current lambda value of lasso : {min_lambda_lasso}')
+print(
+    f'The maximum error value of lasso: {max_error_value_lasso}. The current lambda value of lasso : {max_lambda_lasso}')
 print()
 
 # These part of code is to printing the plot of question 2f
-Question_2f_plot=plt.plot(lambda_list_lasso,puring_error_lasso,'red',label='line_lasso')
+Question_2f_plot = plt.plot(
+    lambda_list_lasso, puring_error_lasso, 'red', label='line_lasso')
 plt.xlabel('lambda range(lasso)')
 plt.ylabel('Error average(lasso)')
 plt.legend(loc='best')
