@@ -114,3 +114,13 @@ print(f"The Log loss of GridSearchCV is {log_loss_result}")
 print(f"The Train accuracy of GridSearchCV is {train_accuracy_GCV}")
 print(f"The Test accuracy of GridSearchCV is {test_accuracy_GCV}")
 print()
+
+#####################################################################
+# This part of code is for Question 1 (d)
+# In the following question C1, using all training set
+# boostrap
+#####################################################################
+for item in range(10000):
+    # generating train-i
+    # i random list --> range(0-499) len(500) !!! important !!!
+    pass
