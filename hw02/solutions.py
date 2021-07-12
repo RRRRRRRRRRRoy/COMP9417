@@ -38,16 +38,6 @@ test_Y = Original_Training_Y[500:]
 # print(test_X.shape)
 # print(test_Y.shape)
 
-# for i in range(9, 10):
-#     # Getting the matrix
-#     temp_X = np.copy(train_X)
-#     temp_Y = np.copy(train_Y)
-#     valid_X = temp_X[i*50:(i+1)*50]
-#     valid_Y = temp_Y[i*50:(i+1)*50]
-# # Removing the data from the array
-#     Training_X = np.delete(temp_X, [i for i in range(i*50, (i+1)*50)], 0)
-#     Training_Y = np.delete(temp_Y, [i for i in range(i*50, (i+1)*50)], 0)
-
 log_loss_total_list = list()
 log_loss_total_1000 = list()
 # Greedy search is focused on train x and train y
@@ -83,9 +73,9 @@ log_loss_mean = np.mean(log_loss_total_array, axis=1)
 # print(log_loss_mean)
 least_log_mean_list = log_loss_mean.tolist()
 least_log_loss = min(least_log_mean_list)
-print(least_log_loss)
+# print(least_log_loss)
 C_index = least_log_mean_list.index(least_log_loss)
-print(C_index)
+# print(C_index)
 the_best_C = c_grid[C_index]
 print(
     f"The best C is {the_best_C}, which log loss value is {least_log_mean_list[C_index]}")
@@ -97,8 +87,10 @@ print(
 classifier_with_best_C = LogisticRegression(C=the_best_C, solver='liblinear')
 classifier_with_best_C.fit(train_X, np.ravel(train_Y))
 y_predict_with_best_C = classifier_with_best_C.predict(test_X)
-acc = accuracy_score(test_Y, y_predict_with_best_C)
-print(f"The final accuracy is {acc}")
+training_acc = accuracy_score(train_Y, classifier_with_best_C.predict(train_X))
+testing_acc = accuracy_score(test_Y, y_predict_with_best_C)
+print(f"The Train accuracy is {training_acc}")
+print(f"The Test accuracy is {testing_acc}")
 
 #####################################################################
 # This part of code is for Question 1 (c)
