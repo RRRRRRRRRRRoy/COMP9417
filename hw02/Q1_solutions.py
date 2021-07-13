@@ -79,8 +79,8 @@ print("Here is the result of question 1 (b)")
 print(
     f"The best C is {the_best_C}, which log loss value is {least_log_loss}")
 
-plt.boxplot(log_loss_total_list)
-plt.show()
+# plt.boxplot(log_loss_total_list)
+# plt.show()
 
 # Here is the refit process
 classifier_best_C = LogisticRegression(
@@ -117,10 +117,71 @@ print()
 
 #####################################################################
 # This part of code is for Question 1 (d)
-# In the following question C1, using all training set
+# In the following question C=1, using all training set
 # boostrap
 #####################################################################
+# random_list = np.random.random_integers(0, 499, 500)
+# print(random_list)
+# boostrap_train_X = np.zeros_like(train_X)
+# boostrap_train_Y = np.zeros_like(train_Y)
+# for index in range(500):
+#     boostrap_temp_X = train_X[random_list[index]]
+#     boostrap_temp_Y = train_Y[random_list[index]]
+#     boostrap_train_X[index] = boostrap_temp_X
+#     boostrap_train_Y[index] = boostrap_temp_Y
+
+coefficient_list = list()
+np.random.seed(12)
 for item in range(10000):
     # generating train-i
     # i random list --> range(0-499) len(500) !!! important !!!
-    pass
+    random_list = np.random.randint(0, 500, 500)
+    boostrap_train_X = np.zeros_like(train_X)
+    boostrap_train_Y = np.zeros_like(train_Y)
+    for index in range(500):
+        boostrap_temp_X = train_X[random_list[index]]
+        boostrap_temp_Y = train_Y[random_list[index]]
+        boostrap_train_X[index] = boostrap_temp_X
+        boostrap_train_Y[index] = boostrap_temp_Y
+
+    classifier_d = LogisticRegression(C=1.0, solver='liblinear', penalty='l1')
+    classifier_d.fit(boostrap_train_X, boostrap_train_Y.ravel())
+    coefficient_result = classifier_d.coef_
+    coefficient_list.append(coefficient_result.tolist())
+
+
+purify_coeffcient_list = list()
+for item in coefficient_list:
+    for i in item:
+        purify_coeffcient_list.append(i)
+
+
+coefficient_list_9000 = np.array(purify_coeffcient_list[:9000])
+print(coefficient_list_9000.shape)
+print(type(coefficient_list_9000))
+
+fifty_column = np.percentile(purify_coeffcient_list, 50, axis=0)
+fifth_column = np.percentile(coefficient_list_9000, 5, axis=0)
+ninety_fifth_column = np.percentile(coefficient_list_9000, 95, axis=0)
+
+# print(fifth_column)
+# print(ninety_fifth_column)
+
+bar_data = list()
+for index in range(len(fifth_column)):
+    bar_data.append([fifth_column[index], ninety_fifth_column[index]])
+# print(bar_data)
+
+for index in range(len(bar_data)):
+    ndarray_data = np.array(bar_data[index])
+    if ndarray_data[0] < 0 and ndarray_data[1] > 0:
+        plot_mean_point = plt.scatter(
+            index, fifty_column[index], color="black", alpha=1)
+        plot_draw = plt.bar(index, ndarray_data, color='red')
+
+    else:
+        plot_mean_point = plt.scatter(
+            index, fifty_column[index], color="black", alpha=1)
+        plot_draw = plt.bar(index, ndarray_data, color='blue')
+
+plt.show()
