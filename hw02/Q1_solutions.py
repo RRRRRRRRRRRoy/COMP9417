@@ -2,6 +2,7 @@
 
 
 #####################################################################
+from typing import Any
 import sklearn
 from sklearn.metrics import log_loss
 from sklearn.linear_model import LogisticRegression
@@ -79,8 +80,12 @@ print("Here is the result of question 1 (b)")
 print(
     f"The best C is {the_best_C}, which log loss value is {least_log_loss}")
 
-# plt.boxplot(log_loss_total_list)
-# plt.show()
+fig = plt.figure(figsize=(20, 10))
+fig.autofmt_xdate()
+plt.boxplot(log_loss_total_list, labels=np.around(c_grid, decimals=4))
+plt.xticks(rotation=70)
+plt.show()
+
 
 # Here is the refit process
 classifier_best_C = LogisticRegression(
