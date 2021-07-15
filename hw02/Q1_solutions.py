@@ -3,6 +3,7 @@
 
 #####################################################################
 from typing import Any
+from numpy.core.fromnumeric import size
 import sklearn
 from sklearn.metrics import log_loss
 from sklearn.linear_model import LogisticRegression, LinearRegression
@@ -135,7 +136,7 @@ print()
 
 coefficient_list = list()
 np.random.seed(12)
-for item in tqdm(range(10000)):
+for item in tqdm(range(100)):
     # generating train-i
     # i random list --> range(0-499) len(500) !!! important !!!
     random_list = np.random.randint(0, 500, 500)
@@ -203,4 +204,9 @@ for index in range(len(bar_data)):
         if fifth_column[index] > 0 and ninety_fifth_column[index] > 0:
             plot_draw = plt.bar(
                 index, bottom=fifth_column[index], height=ninety_fifth_column[index]-fifth_column[index], color='blue')
+label_XXX = [i for i in range(len(mean_column))]
+print(label_XXX)
+plt.plot(label_XXX,
+         mean_column, "o", color="white", label="point", markersize="3")
+
 plt.show()
