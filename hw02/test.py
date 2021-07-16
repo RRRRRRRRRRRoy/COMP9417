@@ -1,3 +1,8 @@
-l_1 = [i for i in range(1, 101)]
-percentage_len = 100*0.9
-print(len(l_1[:percentage_len]))
+import numpy as np
+
+arr = np.arange(15).reshape(3, 5)
+
+print(arr)
+print(arr.T)
+print(arr.T.T)
+print(arr.dot(arr.T))

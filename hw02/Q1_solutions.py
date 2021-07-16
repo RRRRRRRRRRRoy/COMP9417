@@ -3,12 +3,9 @@
 
 #####################################################################
 from typing import Any
-from numpy.core.fromnumeric import size
-import sklearn
 from sklearn.metrics import log_loss
-from sklearn.linear_model import LogisticRegression, LinearRegression
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV
-import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -136,7 +133,7 @@ print()
 
 coefficient_list = list()
 np.random.seed(12)
-for item in tqdm(range(100)):
+for item in tqdm(range(10000)):
     # generating train-i
     # i random list --> range(0-499) len(500) !!! important !!!
     random_list = np.random.randint(0, 500, 500)

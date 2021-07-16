@@ -1,11 +1,13 @@
 #####################################################################
 
 #####################################################################
-import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
+import jax.numpy as jnp
+from jax import grad, random
+import jax as jax
 #####################################################################
 # Question2 a
 #####################################################################
@@ -162,6 +164,37 @@ print(f"first row Y test: {Test_Y[-1]}")
 # Question2 e
 #####################################################################
 
+
+def predict(W, inputs):
+    para_w = np.array([W[0][1:len(W[0]-1)]])
+    para_w_T = para_w.T
+    predict_result = jnp.dot(inputs, para_w_T)
+    return predict_result
+
+
+def loss_function(W, inputs, targets):
+    preds = predict(W, inputs)
+    loss_loss = jnp.mean(
+        jnp.sum(jnp.sqrt(1/4 * (jnp.square(targets - preds))+1)-1))
+    return loss_loss
+
+
+w = jnp.array([[1.0, 1.0, 1.0, 1.0]])
+predict_result = predict(w, Train_X)
+loss = loss_function(w, Train_X, Train_Y)
+loss = np.array(loss)
+print(type(loss))
+print(loss)
+
+key = jax.random.PRNGKey(0)
+key, W_key = random.split(key, 2)
+W = random.normal(W_key, (4,))
+
+W_grad = grad(loss_function)(w, Train_X, Train_Y)
+print(W_grad)
+
+W_grad = grad(loss_function)(W_grad, Train_X, Train_Y)
+print(W_grad)
 #####################################################################
 # Question2 f
 #####################################################################
