@@ -8,6 +8,7 @@ from sklearn.preprocessing import MinMaxScaler
 import jax.numpy as jnp
 from jax import grad, random
 import jax as jax
+import tqdm as tqdm
 #####################################################################
 # Question2 a
 #####################################################################
@@ -71,7 +72,7 @@ def learning_rate_b(x_k_b):
     Bottom_line = 2*np.dot(np.dot(np.dot((np.dot(np.dot(A,A.T),(np.dot(A,x_k_b)-b))).T,A),A.T),(np.dot(A,x_k_b)-b))
     learning_rate_result = np.float32(Top_line/Bottom_line)
     return learning_rate_result
-    
+
 learning_rate_init = learning_rate_b(x_k_b)
 # print(learning_rate_init)
 
@@ -99,8 +100,8 @@ for index in range(1, 200):
         x_k_b = next_x_b
 
 # print(norm_list_b)
-print(x_k_b_lst)
-print(learning_rate_lst)
+# print(x_k_b_lst)
+# print(learning_rate_lst)
 
 #####################################################################
 # Question2 c
@@ -111,97 +112,140 @@ print(learning_rate_lst)
 #####################################################################
 # Question2 d
 #####################################################################
-# Original_Q2_data = pd.read_csv("./hw02/Q2.csv")
-# Original_train_X = Original_Q2_data.iloc[:, 1: 4]
-# Original_train_Y = Original_Q2_data.iloc[:, 6: 7]
-# Total_X_NAN = np.array(Original_train_X)
-# Total_Y_NAN = np.array(Original_train_Y)
-# Total_data_NAN = np.hstack((Total_X_NAN, Total_Y_NAN))
-# # How to remove NAN
-# # Source: https://note.nkmk.me/en/python-numpy-nan-remove/
-# puring_data = Total_data_NAN[~np.isnan(Total_data_NAN).any(axis=1)]
+Original_Q2_data = pd.read_csv("./hw02/Q2.csv")
+Original_train_X = Original_Q2_data.iloc[:, 1: 4]
+Original_train_Y = Original_Q2_data.iloc[:, 6: 7]
+Total_X_NAN = np.array(Original_train_X)
+Total_Y_NAN = np.array(Original_train_Y)
+Total_data_NAN = np.hstack((Total_X_NAN, Total_Y_NAN))
+# How to remove NAN
+# Source: https://note.nkmk.me/en/python-numpy-nan-remove/
+puring_data = Total_data_NAN[~np.isnan(Total_data_NAN).any(axis=1)]
 
-# Total_X = puring_data[:, :3]
-# Total_Y = puring_data[:, 3:4]
-# # print(Total_X.shape)
-# # print(Total_Y.shape)
+Total_X = puring_data[:, :3]
+Total_Y = puring_data[:, 3:4]
+# print(Total_X.shape)
+# print(Total_Y.shape)
 
-# Q2_d_min_max_scalar = MinMaxScaler()
-# Q2_d_x_min_max = Q2_d_min_max_scalar.fit_transform(Total_X)
-
-
-# def get_half(length):
-#     if length % 2 == 0:
-#         half_index = length
-#     elif length % 2 == 1:
-#         half_index = length//2 + 1
-#     return half_index
+Q2_d_min_max_scalar = MinMaxScaler()
+Q2_d_x_min_max = Q2_d_min_max_scalar.fit_transform(Total_X)
 
 
-# half_index = get_half(len(Total_X))
-
-# # print(half_index)
-# Train_X = Q2_d_x_min_max[:half_index]
-# Test_X = Q2_d_x_min_max[half_index:len(Total_X)]
-# Train_Y = Total_Y[:half_index]
-# Test_Y = Total_Y[half_index:len(Total_Y)]
-
-# '''
-# • first row X train: [0.73059361, 0.00951267, 1.]
-# • last row X train: [0.87899543, 0.09926012, 0.3]
-# • first row X test: [0.26255708, 0.20677973, 0.1]
-# • last row X test: [0.14840183, 0.0103754, 0.9]
-# • first row Y train: 37.9
-# • last row Y train: 34.2
-# • first row Y test: 26.2
-# • last row Y test: 63.9
-# '''
-# print(f"first row X train: {Train_X[0]}")
-# print(f"last row X train: {Train_X[-1]}")
-# print(f"first row X test: {Test_X[0]}")
-# print(f"last row X test: {Test_X[-1]}")
-# print(f"first row Y train: {Train_Y[0]}")
-# print(f"last row Y train: {Train_Y[-1]}")
-# print(f"first row Y test: {Test_Y[0]}")
-# print(f"first row Y test: {Test_Y[-1]}")
-
-# #####################################################################
-# # Question2 e
-# #####################################################################
-# adding_one = np.array([[1] for i in range(len(Train_X))])
-# print(adding_one.shape)
-# new_Train_X = np.hstack((adding_one, Train_X))
-# # inputs = jnp.array(Train_X)
-# print(new_Train_X.shape)
-# # print(new_Train_X)
-# inputs = jnp.array(new_Train_X)
-# targets = jnp.array(Train_Y)
-# W_init= jnp.array([[1.0, 1.0, 1.0, 1.0]])
-# print(W_init.shape)
-# print(W_init.T.shape)
-
-# def predict(W):
-#   para_w_T = W.T
-#   predict_result = jnp.dot(inputs,para_w_T)
-#   return predict_result
+def get_half(length):
+    if length % 2 == 0:
+        half_index = length
+    elif length % 2 == 1:
+        half_index = length//2 + 1
+    return half_index
 
 
-# def loss(W):
-#   preds = predict(W)
-#   return jnp.mean((jnp.sqrt(0.25*jnp.square(targets-preds)+1)-1))
+half_index = get_half(len(Total_X))
+
+# print(half_index)
+Train_X = Q2_d_x_min_max[:half_index]
+Test_X = Q2_d_x_min_max[half_index:len(Total_X)]
+Train_Y = Total_Y[:half_index]
+Test_Y = Total_Y[half_index:len(Total_Y)]
+
+'''
+• first row X train: [0.73059361, 0.00951267, 1.]
+• last row X train: [0.87899543, 0.09926012, 0.3]
+• first row X test: [0.26255708, 0.20677973, 0.1]
+• last row X test: [0.14840183, 0.0103754, 0.9]
+• first row Y train: 37.9
+• last row Y train: 34.2
+• first row Y test: 26.2
+• last row Y test: 63.9
+'''
+
+print("Here is the answer of question2 (d):")
+print(f"first row X train: {Train_X[0]}")
+print(f"last row X train: {Train_X[-1]}")
+print(f"first row X test: {Test_X[0]}")
+print(f"last row X test: {Test_X[-1]}")
+print(f"first row Y train: {Train_Y[0]}")
+print(f"last row Y train: {Train_Y[-1]}")
+print(f"first row Y test: {Test_Y[0]}")
+print(f"first row Y test: {Test_Y[-1]}")
+print()
+#####################################################################
+# Question2 e
+#####################################################################
+adding_one = np.array([[1] for i in range(len(Train_X))])
+print(adding_one.shape)
+new_Train_X = np.hstack((adding_one, Train_X))
+# inputs = jnp.array(Train_X)
+print(new_Train_X.shape)
+# print(new_Train_X)
+inputs = jnp.array(new_Train_X)
+targets = jnp.array(Train_Y)
+W = jnp.array([[1.0, 1.0, 1.0, 1.0]])
+print(W.shape)
+print(W.T.shape)
+
+def predict(W):
+  para_w_T = W.T
+  predict_result = jnp.dot(inputs,para_w_T)
+  return predict_result
 
 
-# predict_result = predict(W_init)
-# loss_result = loss(W_init)
-# loss_result = np.array(loss_result)
-
-# print(loss_result)
-
-# W_grad = grad(loss)(W_init)
-# print(W_grad)
+def loss(W):
+  preds = predict(W)
+  return jnp.mean((jnp.sqrt(0.25*jnp.square(targets-preds)+1)-1))
 
 
+predict_result = predict(W)
+loss_result = loss(W)
+print(loss_result)
 
+W_grad = grad(loss)(W)
+print(W_grad)
+
+learning_rate = 1
+
+loss_list = [loss_result]
+weight_list = list()
+previous_loss = loss_result
+for index in range(99999):
+    current_w = W -learning_rate * grad(loss)(W)
+    current_loss = loss(current_w)
+    # print(f"difference: {abs(previous_loss-current_loss)}")
+    if abs(previous_loss-current_loss) < 0.0001:
+        break
+    else:
+        loss_list.append(current_loss)
+        previous_loss = current_loss
+        weight_list.append(current_w)
+        W = current_w
+
+weight_array = jnp.array(weight_list)
+index_list = [i for i in range(len(loss_list))]
+plt.figure(figsize=(6, 6))
+plt.plot(index_list, loss_list)
+
+train_loss = loss(weight_array[-1])
+# print(train_loss)
+
+def predict_test(W):
+  para_w_T = W.T
+  predict_result = jnp.dot(e_test_x,para_w_T)
+  return predict_result
+
+def loss_test(W):
+  preds = predict_test(W)
+  return jnp.mean((jnp.sqrt(0.25*jnp.square(e_test_y-preds)+1)-1))
+
+adding_one_test = np.array([[1] for i in range(len(Test_X))])
+new_test_x = np.hstack((adding_one_test, Test_X))
+e_test_x = jnp.array(new_test_x)  
+e_test_y = jnp.array(Test_Y)
+test_loss = loss_test(weight_array[-1])
+
+print("Here is the answer of question2 (e):")
+print(f"Iterration: {len(loss_list)-1}")
+print(f"The final weight is: {weight_array[-1]}")
+print(f"The Train loss is: {train_loss}")
+print(f"The Test loss is: {test_loss}")
 # #####################################################################
 # # Question2 f
 # #####################################################################
