@@ -108,7 +108,7 @@ plt.xticks(rotation=90)
 plt.show()
 
 
-# Here is the refit process
+# Here is the refit process  total 500 training and testing
 # Using the best C value to retrain the model
 classifier_best_C = LogisticRegression(
     C=the_best_C, solver='liblinear', penalty='l1', random_state=0)
@@ -134,27 +134,47 @@ print()
 # How to use acc score
 # Source: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html
 #####################################################################
-
 param_grid = {"C": c_grid}
 # This Grid Search CV method is from the Instruction PDF file
 # Setting the random state to 0 is easy to check
+grid_lr_1 = GridSearchCV(estimator=LogisticRegression(
+    penalty='l1', solver='liblinear'), cv=10, param_grid=param_grid)
+grid_lr_1.fit(train_X, np.ravel(train_Y))
+
+
+getting_log_loss = grid_lr_1.predict_proba(test_X)
+log_loss_result = log_loss(test_Y, getting_log_loss)
+
+
+print("Here is the result of question 1 (c): No parameters change")
+# The best params are provided by searchCV
+C_result_1 = grid_lr_1.best_params_
+C_value_1 = C_result_1["C"]
+print(f"The best C is {C_value_1}")
+print(f"The Log loss of GridSearchCV (Manually compute) is {log_loss_result}")
+
+
+# This part of code is same as the previous
+# Here changing the parameter to make the result same 
 grid_lr = GridSearchCV(estimator=LogisticRegression(
-    penalty='l1', solver='liblinear', random_state=0), scoring='neg_log_loss', cv=KFold(10), param_grid=param_grid)
+    penalty='l1', solver='liblinear', random_state=0), 
+    scoring='neg_log_loss', cv=KFold(10), param_grid=param_grid)
 grid_lr.fit(train_X, np.ravel(train_Y))
 
 predict_y_GCV = grid_lr.predict(test_X)
 predict_y_GCV_train = grid_lr.predict(train_X)
 
+
 # Here we can using the accuracy score to get the result of C
 train_accuracy_GCV = accuracy_score(train_Y, predict_y_GCV_train)
 test_accuracy_GCV = accuracy_score(test_Y, predict_y_GCV)
-
-print("Here is the result of question 1 (c)")
+print()
+print("Here is the result of question 1 (c): Chaning the Parameters and rerun!")
 # The best params are provided by searchCV
 C_result = grid_lr.best_params_
 C_value = C_result["C"]
 print(f"The best C is {C_value}")
-print(f"The Log loss of GridSearchCV is {grid_lr.best_score_}")
+print(f"The Log loss of GridSearchCV (scoring = neg_log_loss) is {grid_lr.best_score_}")
 print(f"The Train accuracy of GridSearchCV is {train_accuracy_GCV}")
 print(f"The Test accuracy of GridSearchCV is {test_accuracy_GCV}")
 print()
