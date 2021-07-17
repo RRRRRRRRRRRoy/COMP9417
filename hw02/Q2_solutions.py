@@ -12,60 +12,76 @@ from scipy.optimize import minimize
 import tqdm as tqdm
 #####################################################################
 # Question2 a
+# Using the norm function to check the breaker of the loop
+# Default is norm 2
+# Source: https://numpy.org/doc/stable/reference/generated/numpy.linalg.norm.html
 #####################################################################
 # From this question we can define A and b in the first step
+# You can find the following constant from the instruction PDF
 A = np.array([[1, 0, 1, -1], [-1, 1, 0, 2], [0, -1, -2, 1]])
 b = np.array([[1], [2], [3]])
 x_k = np.array([[1], [1], [1], [1]])
 learning_rate = 0.1
 
+# These are used to store the result
 result_dict = {0: x_k}
 result_list = [0]
 
+# This is used to check the norm value of each step
 norm_list = list()
-for index in range(1, 9999):
+for index in range(1, 99999):
+    # This is to updating the gradients
     current_gradients = np.dot(A.T, (np.dot(A, x_k)-b))
+    # Using the norm function to check the breaker of the loop
+    # Default is norm 2
+    # Source: https://numpy.org/doc/stable/reference/generated/numpy.linalg.norm.html
     gradient_norm = np.linalg.norm(current_gradients)
     next_x = x_k-learning_rate*current_gradients
-    if gradient_norm < 0.001:
-        break
-    # print(gradient_norm)
-    if gradient_norm < 0.001:
-        break
-    else:
+    # when norm < 0.001 break the loop
+    if gradient_norm >= 0.001:
+        # Updating the feature for the next round
         norm_list.append(gradient_norm)
         result_dict.update({index: next_x})
         # test the list
-        result_list.append(next_x)
+        result_list.append(next_x.tolist())
+        # Updating the x to the next
         x_k = next_x
+    else:
+        # gradient_norm < 0.001 break the loop
+        break
 
 # Delete i times --> Using norm list to select corrent answer in the result_dict
 # for i in range(abs(len(result_dict) - len(norm_list))):
 #     del result_dict[len(norm_list)-i]
-
+# print(result_list)
 print("Here is the answer of question2 (a):")
 for i in range(5):
     x_result = result_dict[i].tolist()
     x_result = [iii for item in x_result for iii in item]
-    print(f"k={i}, x(k={i})={list(x_result)}")
+    x_result_list = list(x_result)
+    print(f"k={i}, x(k={i}) = {x_result_list}")
 
 # notice here using norm list to limit the result_dict
-for i in range(len(result_dict)-1, len(result_dict)-6, -1):
+for i in range(len(result_dict)-5, len(result_dict), 1):
     x_result = result_dict[i].tolist()
     x_result = [iii for item in x_result for iii in item]
-    print(f"k={i}, x(k={i})={list(x_result)}")
+    x_result_list = list(x_result)
+    print(f"k={i}, x(k={i}) = {x_result_list}")
 print()
 #####################################################################
 # Question2 b
 # From this question we can define A and b in the first step
-# We can get the following ((A∇f(x^((k) ) ))^T (Ax^((k) )-b)+((Ax^((k) )-b))^T A∇f(x^((k) ) ))/(〖2(A∇f(x^((k) ) ))〗^T A∇f(x^((k) ) ) )
+# You can find the final equation of alpha from the report
+# 
+# This equation is copies from word
+# α=((A∇f(x^((k) ) ))^T (Ax^((k) )-b)+((Ax^((k) )-b))^T A∇f(x^((k) ) ))/(〖2(A∇f(x^((k) ) ))〗^T A∇f(x^((k) ) ) )
+# 
 #####################################################################
 A = np.array([[1, 0, 1, -1], [-1, 1, 0, 2], [0, -1, -2, 1]])
 b = np.array([[1], [2], [3]])
 x_k_b = np.array([[1], [1], [1], [1]])
 
-
-
+# Wring the final equation to the function
 def learning_rate_function(x_k_b):
     A_x_k_b = np.dot(A,x_k_b)-b
     A_f_x_k = np.dot(A,np.dot(A.T,A_x_k_b))
@@ -78,20 +94,23 @@ def learning_rate_function(x_k_b):
 # # print(current_learning_rate)
 # # print(learning_rate_function(x_k_b))
 
-learning_rate_lst = [0.1]
-x_k_b_dict = {0:x_k_b}
+# These is to store the result
+learning_rate_lst = list()
+x_k_b_dict = list()
 norm_checker = list()
 
+# Looping and find the result
 for index in range(9999):
     current_gradients_b = np.dot(A.T, (np.dot(A, x_k_b)-b))
-    # print(f"gradients: {current_gradients_b}")
-    # print(f"learning rate: {current_learning_rate}")
-    # print(current_gradients_b)
+
+    # This part of code is to update the learning rate
     if index ==0:
         current_learning_rate = 0.1
+        learning_rate_lst.append([[current_learning_rate]])
+        x_k_b_dict.append(np.array([[1], [1], [1], [1]]))
     else:
+        # Updating the
         current_learning_rate = learning_rate_function(x_k_b)
-
     next_x_b = x_k_b - current_learning_rate * current_gradients_b
     # print(f"The next x: {next_x_b}")
     gradient_norm_b = np.linalg.norm(current_gradients_b)
@@ -103,16 +122,40 @@ for index in range(9999):
         next_learning_rate = learning_rate_function(x_k_b)
         # print(f"learning rate: {next_learning_rate}")
         norm_checker.append(gradient_norm_b)
-        x_k_b_dict.update({index:next_x_b})
-        learning_rate_lst.append(next_learning_rate)
+        x_k_b_dict.append(next_x_b)
+        learning_rate_lst.append(next_learning_rate.tolist())
         current_learning_rate = next_learning_rate
         x_k_b = next_x_b
 
 
-# index_array_d = np.array([i for i in range(len(learning_rate_lst))])
-# ???
+# print the result same as Question b
+print("Here is the answer of question2 (b):")
+for i in range(5):
+    x_result = x_k_b_dict[i]
+    x_result = [iii for item in x_result for iii in item]
+    x_result_list = list(x_result)
+    print(f"k={i}, x(k={i}) = {x_result_list}")
+
+# notice here using norm list to limit the result_dict
+for i in range(len(x_k_b_dict)-5, len(x_k_b_dict), 1):
+    x_result = x_k_b_dict[i]
+    x_result = [iii for item in x_result for iii in item]
+    x_result_list = list(x_result)
+    print(f"k={i}, x(k={i}) = {x_result_list}")
+
+print()
+
+# Clearn the matrix
+pure_learning_rate_list_b = list()
+for item in learning_rate_lst:
+    for iii in item:
+        for iiii in iii:
+            pure_learning_rate_list_b.append(iiii)
+print(len(pure_learning_rate_list_b)==len(learning_rate_lst))
+
+index_array_d = [i for i in range(len(pure_learning_rate_list_b))]
 plt.plot()
-plt.plot(index_array_d,learning_rate_lst)
+plt.plot(index_array_d,pure_learning_rate_list_b[:len(pure_learning_rate_list_b)])
 plt.show()
 #####################################################################
 # Question2 d
@@ -163,16 +206,16 @@ Test_Y = Total_Y[half_index:len(Total_Y)]
 • last row Y test: 63.9
 '''
 
-# print("Here is the answer of question2 (d):")
-# print(f"first row X train: {Train_X[0]}")
-# print(f"last row X train: {Train_X[-1]}")
-# print(f"first row X test: {Test_X[0]}")
-# print(f"last row X test: {Test_X[-1]}")
-# print(f"first row Y train: {Train_Y[0]}")
-# print(f"last row Y train: {Train_Y[-1]}")
-# print(f"first row Y test: {Test_Y[0]}")
-# print(f"first row Y test: {Test_Y[-1]}")
-# print()
+print("Here is the answer of question2 (d):")
+print(f"first row X train: {Train_X[0]}")
+print(f"last row X train: {Train_X[-1]}")
+print(f"first row X test: {Test_X[0]}")
+print(f"last row X test: {Test_X[-1]}")
+print(f"first row Y train: {Train_Y[0]}")
+print(f"last row Y train: {Train_Y[-1]}")
+print(f"first row Y test: {Test_Y[0]}")
+print(f"first row Y test: {Test_Y[-1]}")
+print()
 #####################################################################
 # Question2 e
 #####################################################################
@@ -273,8 +316,6 @@ A_f = np.array([[1, 0, 1, -1], [-1, 1, 0, 2], [0, -1, -2, 1]])
 b_f = np.array([[1], [2], [3]])
 x_k_b_f = np.array([[1], [1], [1], [1]])
 
-w0 = jnp.array([[1.0, 1.0, 1.0, 1.0]])
-optimal = minimize(learning_rate_function,x_k_b,method="BFGS")   
-w_optimize = optimal
-# print(w_optimize)
+def new_alpha():
+    
 
