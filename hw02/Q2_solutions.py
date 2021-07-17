@@ -9,7 +9,8 @@ import jax.numpy as jnp
 from jax import grad, random
 import jax as jax
 from scipy.optimize import minimize
-import tqdm as tqdm
+from scipy.optimize import rosen_der
+from tqdm import tqdm
 #####################################################################
 # Question2 a
 # Using the norm function to check the breaker of the loop
@@ -151,7 +152,7 @@ for item in learning_rate_lst:
     for iii in item:
         for iiii in iii:
             pure_learning_rate_list_b.append(iiii)
-print(len(pure_learning_rate_list_b)==len(learning_rate_lst))
+
 
 index_array_d = [i for i in range(len(pure_learning_rate_list_b))]
 plt.plot()
@@ -232,8 +233,7 @@ W = jnp.array([[1.0, 1.0, 1.0, 1.0]])
 # print(W.T.shape)
 
 def predict(W):
-  para_w_T = W.T
-  predict_result = jnp.dot(inputs,para_w_T)
+  predict_result = jnp.dot(inputs,W.T)
   return predict_result
 
 
@@ -315,7 +315,43 @@ print()
 A_f = np.array([[1, 0, 1, -1], [-1, 1, 0, 2], [0, -1, -2, 1]])
 b_f = np.array([[1], [2], [3]])
 x_k_b_f = np.array([[1], [1], [1], [1]])
+W_f = jnp.array([[1.0, 1.0, 1.0, 1.0]])
 
-def new_alpha():
-    
 
+def alpha_loss(alpha,w,X,Y):
+    gradient_e = grad(loss)(X)
+    input = X - alpha * gradient_e
+    para_w_T = w.T
+    predict_result = jnp.dot(input,para_w_T)
+    return jnp.mean((jnp.sqrt(0.25*jnp.square(Y-predict_result)+1)-1))
+
+
+
+loss_list_f = list()
+weight_list_f = list()
+
+
+for index in range(3000):
+    if index == 0:
+        current_w_f = W_f
+    alpha_0 = 1.0
+    # print(current_w_f)
+    gradient_f = grad(loss)(current_w_f)
+    optimal = minimize(alpha_loss,alpha_0,args=(current_w_f,inputs,targets),method="BFGS",jac=grad(alpha_loss))
+    current_alpha = optimal.x
+    next_W = current_w_f - current_alpha * gradient_f
+    current_loss = loss(current_w_f)
+    # print(f"difference: {abs(previous_loss-current_loss)}")
+    if current_loss < 2.5:
+        break
+    else:
+        loss_list_f.append(current_loss)
+        weight_list_f.append(next_W)
+        current_w_f = next_W
+
+print(len(loss_list_f))
+
+index_array_d = [i for i in range(len(loss_list_f))]
+plt.plot()
+plt.plot(index_array_d,loss_list_f[:len(loss_list_f)])
+plt.show()
