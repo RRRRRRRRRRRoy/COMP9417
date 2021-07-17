@@ -146,12 +146,12 @@ getting_log_loss = grid_lr_1.predict_proba(test_X)
 log_loss_result = log_loss(test_Y, getting_log_loss)
 
 
-print("Here is the result of question 1 (c): No parameters change")
+print("Here is the result of question 1 (c): No parameters changed")
 # The best params are provided by searchCV
 C_result_1 = grid_lr_1.best_params_
 C_value_1 = C_result_1["C"]
 print(f"The best C is {C_value_1}")
-print(f"The Log loss of GridSearchCV (Manually compute) is {log_loss_result}")
+print(f"The Log loss of GridSearchCV is {log_loss_result}")
 
 
 # This part of code is same as the previous
@@ -169,12 +169,12 @@ predict_y_GCV_train = grid_lr.predict(train_X)
 train_accuracy_GCV = accuracy_score(train_Y, predict_y_GCV_train)
 test_accuracy_GCV = accuracy_score(test_Y, predict_y_GCV)
 print()
-print("Here is the result of question 1 (c): Chaning the Parameters and rerun!")
+print("Here is the result of (c): Chaning the Kfold and Scoring!")
 # The best params are provided by searchCV
 C_result = grid_lr.best_params_
 C_value = C_result["C"]
 print(f"The best C is {C_value}")
-print(f"The Log loss of GridSearchCV (scoring = neg_log_loss) is {grid_lr.best_score_}")
+print(f"The Log loss of GridSearchCV is {grid_lr.best_score_}")
 print(f"The Train accuracy of GridSearchCV is {train_accuracy_GCV}")
 print(f"The Test accuracy of GridSearchCV is {test_accuracy_GCV}")
 print()
@@ -186,10 +186,10 @@ print()
 # How to use percentile to get the data
 # Source: https://numpy.org/doc/stable/reference/generated/numpy.percentile.html
 #####################################################################
-
+print("Here is the plot of (d)")
 coefficient_list = list()
 np.random.seed(12)
-for item in tqdm(range(100)):
+for item in tqdm(range(10000)):
     # generating train-i
     # i random list --> range(0-499) len(500) !!! important !!!
     random_list = np.random.randint(0, 500, 500)
@@ -223,7 +223,9 @@ coefficient_list_9000 = np.array(purify_coeffcient_list[:9000])
 
 # Getting the 50%
 # fifty_column = np.percentile(purify_coeffcient_list, 50, axis=0)
-mean_column = np.mean(coefficient_list_9000, axis=0)
+# The question Said get mean for each bar
+# Therefore using 9000 list to get the mean
+mean_column = np.mean(purify_coeffcient_list, axis=0)
 # # Getting the 5%
 fifth_column = np.percentile(coefficient_list_9000, 5, axis=0)
 # # Getting the 95%
@@ -249,14 +251,11 @@ for index in range(len(fifth_column)):
 for index in range(len(bar_data)):
     ndarray_data = np.array(bar_data[index])
     # This is the red bar
+    # Check the bottom and the height of each bar
     if fifth_column[index] <= 0 and ninety_fifth_column[index] >= 0:
-        # plot_mean_point = plt.scatter(
-        #     index, mean_column[index], color="black", alpha=1)
         plot_draw = plt.bar(
             index, bottom=fifth_column[index], height=ninety_fifth_column[index]+abs(fifth_column[index]), color='red')
     else:
-        # plot_mean_point = plt.scatter(
-        #     index, mean_column[index], color="black", alpha=1)
         # This is the blue bar
         if fifth_column[index] < 0 and ninety_fifth_column[index] < 0:
             plot_draw = plt.bar(
