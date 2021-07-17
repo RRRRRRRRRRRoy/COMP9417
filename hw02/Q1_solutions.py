@@ -267,6 +267,7 @@ label_XXX = [i for i in range(len(mean_column))]
 
 # Draw the mean dot on the graph
 plt.plot(label_XXX,
-         mean_column, "o", color="white", label="point", markersize="3")
+         mean_column, "o", color="lime", label="Mean Point", markersize="3")
+plt.legend()
 
 plt.show()
