@@ -1,5 +1,6 @@
 #####################################################################
-
+# This code is for COMP9417 Homework2 question2
+# Author is z5241868
 #####################################################################
 from jax._src.numpy.lax_numpy import square
 import matplotlib.pyplot as plt
@@ -80,15 +81,13 @@ print()
 # Here are the source of this part
 # How to calculate the norm value ?
 # Source: https://numpy.org/doc/stable/reference/generated/numpy.linalg.norm.html
-
 #####################################################################
 A = np.array([[1, 0, 1, -1], [-1, 1, 0, 2], [0, -1, -2, 1]])
 b = np.array([[1], [2], [3]])
 x_k_b = np.array([[1], [1], [1], [1]])
 
 # Wring the final equation to the function
-
-
+# You can find the equation from the report
 def learning_rate_function(x_k_b):
     A_x_k_b = np.dot(A, x_k_b)-b
     A_f_x_k = np.dot(A, np.dot(A.T, A_x_k_b))
@@ -157,7 +156,7 @@ for i in range(len(x_k_b_dict)-5, len(x_k_b_dict), 1):
 
 print()
 
-# Clearn the matrix
+# Clean the matrix for plotting
 pure_learning_rate_list_b = list()
 for item in learning_rate_lst:
     for iii in item:
@@ -193,7 +192,7 @@ Total_Y = puring_data[:, 3:4]
 Q2_d_min_max_scalar = MinMaxScaler()
 Q2_d_x_min_max = Q2_d_min_max_scalar.fit_transform(Total_X)
 
-
+# Getting the half index of data
 def get_half(length):
     if length % 2 == 0:
         half_index = length
@@ -222,7 +221,7 @@ Test_Y = Total_Y[half_index:len(Total_Y)]
 '''
 test = list()
 
-
+# Printing the result in question2 d
 print("Here is the answer of question2 (d):")
 print(f"first row X_train: {Train_X[0]}")
 print(f"last row X_train: {Train_X[-1]}")
@@ -253,15 +252,11 @@ W = np.array([[1.0, 1.0, 1.0, 1.0]])
 # print(W.T.shape)
 
 # W_T * inputs
-
-
 def predict(W):
     predict_result = jnp.dot(inputs, W.T)
     return predict_result
 
 # This is the loss function in the 2e
-
-
 def loss(W):
     preds = predict(W)
     square_result = jnp.square(targets-preds)
@@ -308,14 +303,13 @@ e_test_x = np.array(new_test_x)
 e_test_y = np.array(Test_Y)
 
 # This part of code is same as training difference is the dataset
-
-
+# Rewrite the predict function for the test loss value
 def predict_test(W):
     para_w_T = W.T
     predict_result = jnp.dot(e_test_x, para_w_T)
     return predict_result
 
-
+# Rewrite the predict function for the test loss value
 def loss_test(W):
     preds = predict_test(W)
     square_result = jnp.square(e_test_y-preds)
@@ -325,13 +319,11 @@ def loss_test(W):
 
 # Using the last w value to calculate the test loss
 test_loss = loss_test(weight_array[-1])
-
 w_final = weight_array[-1]
+
 # Using MAE to calculate the accuracy
 # THis accuracy is based on the MAE
 # Source: https://en.wikipedia.org/wiki/Mean_absolute_error
-
-
 def accuracy(targets, preds):
     return jnp.mean(jnp.abs(targets - preds))
 
@@ -357,22 +349,26 @@ print()
 
 # #####################################################################
 # # Question2 f
+# #
+# # Jacobian matrix
+# # https://en.wikipedia.org/wiki/Jacobian_matrix_and_determinant
 # #####################################################################
 A_f = np.array([[1, 0, 1, -1], [-1, 1, 0, 2], [0, -1, -2, 1]])
 b_f = np.array([[1], [2], [3]])
 x_k_b_f = np.array([[1], [1], [1], [1]])
 W_f = np.array([[1.0, 1.0, 1.0, 1.0]])
 
+# Setting the list to store the data
 loss_list_f = list()
 weight_list_f = list()
 learning_rate_lst = []
 
-
+# Rewrite the loss function for training
 def loss_alpha(alpha, W):
     w_grad = grad(loss)(W)
     return loss(W-alpha*w_grad)
 
-
+# Rewrite the loss function for testing
 def loss_alpha_test(alpha, W):
     w_grad = grad(loss_test)(W)
     return loss_test(W-alpha*w_grad)
@@ -411,8 +407,6 @@ final_w_grad = weight_list_f[-1]
 alpha_final = learning_rate_lst[-1]
 
 # Here accuracy is based on MAE
-
-
 def accuracy(targets, preds):
     return jnp.mean(jnp.abs(targets - preds))
 
@@ -434,6 +428,7 @@ print(f"The Test loss(final model) is: {test_loss_f}")
 print(f"The Train Accuracy(final w based MAE) is: {train_acc_f}")
 print(f"The Test Accuracy(final w based MAE) is: {test_acc_f}")
 
+# printing the final plot for question2 f
 index_array_d = [i for i in range(len(loss_list_f))]
 plt.plot()
 plt.plot(index_array_d, loss_list_f[:len(loss_list_f)])

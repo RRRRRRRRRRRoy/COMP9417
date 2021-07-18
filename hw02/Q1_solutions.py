@@ -1,7 +1,7 @@
 #####################################################################
 # This is the code for COMP9417 HW02 Question1
 # Some of the annotation is the checkpoint of each part of code
-# 
+# Author is z5241868
 #####################################################################
 from sklearn.metrics import log_loss
 from sklearn.linear_model import LogisticRegression
@@ -248,6 +248,7 @@ for index in range(len(fifth_column)):
 
 # Checking the color of each bar
 # using the absolute length to draw the bar plot
+# Checking the span of each bar and print the color
 for index in range(len(bar_data)):
     ndarray_data = np.array(bar_data[index])
     # This is the red bar
