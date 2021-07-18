@@ -1,6 +1,5 @@
 #####################################################################
 # This code is for COMP9417 Homework2 question2
-# Author is z5241868
 # The encironment is Ubuntu 18.4
 #####################################################################
 from jax._src.numpy.lax_numpy import square
