@@ -1,6 +1,7 @@
 #####################################################################
 
 #####################################################################
+from math import log
 from jax._src.numpy.lax_numpy import square
 import matplotlib.pyplot as plt
 import numpy as np
@@ -118,9 +119,7 @@ for index in range(9999):
     gradient_norm_b = np.linalg.norm(current_gradients_b)
     # print(f"norm: {gradient_norm_b}")
     # print(f"the norm value: {gradient_norm_b}")
-    if gradient_norm_b < 0.001:
-        break
-    else:
+    if gradient_norm_b >= 0.001:
         next_learning_rate = learning_rate_function(x_k_b)
         # print(f"learning rate: {next_learning_rate}") 
         norm_checker.append(gradient_norm_b)
@@ -128,6 +127,8 @@ for index in range(9999):
         learning_rate_lst.append(next_learning_rate.tolist())
         current_learning_rate = next_learning_rate
         x_k_b = next_x_b
+    else:
+        break
 
 
 # print the result same as Question b
@@ -259,11 +260,13 @@ learning_rate = 1
 
 loss_list = [loss_result]
 weight_list = list()
+abs_lst = list()
 previous_loss = loss_result
 for index in range(99999):
     current_w = W -learning_rate * grad(loss)(W)
     current_loss = loss(current_w)
     # print(f"difference: {abs(previous_loss-current_loss)}")
+    abs_lst.append(abs(previous_loss-current_loss))
     if abs(previous_loss-current_loss) < 0.0001:
         break
     else:
@@ -277,21 +280,25 @@ index_list = [i for i in range(len(loss_list))]
 train_loss = loss(weight_array[-1])
 # print(train_loss)
 
+
+
+adding_one_test = np.array([[1] for i in range(len(Test_X))])
+new_test_x = np.hstack((adding_one_test, Test_X))
+e_test_x = jnp.array(new_test_x)  
+e_test_y = jnp.array(Test_Y)
+
+
 def predict_test(W):
     para_w_T = W.T
     predict_result = jnp.dot(e_test_x,para_w_T)
     return predict_result
 
 def loss_test(W):
-    preds = predict(W)
-    square_result = jnp.square(targets-preds)
+    preds = predict_test(W)
+    square_result = jnp.square(e_test_y-preds)
     sqrt_result = jnp.sqrt(0.25*square_result+1)
     return jnp.mean((sqrt_result-1))
 
-adding_one_test = np.array([[1] for i in range(len(Test_X))])
-new_test_x = np.hstack((adding_one_test, Test_X))
-e_test_x = jnp.array(new_test_x)  
-e_test_y = jnp.array(Test_Y)
 test_loss = loss_test(weight_array[-1])
 
 w_final = weight_array[-1]
@@ -305,12 +312,12 @@ test_acc = accuracy(e_test_y, predict_test(w_final))
 
 print()
 print("Here is the answer of question2 (e):")
-print(f"Iterration: {len(loss_list)-1}")
+print(f"Iterration: {len(abs_lst)-1}")
 print(f"The final weight is: {weight_array[-1]}")
 print(f"The Train loss(final model) is: {train_loss}")
 print(f"The Test loss(final model) is: {test_loss}")
-# print(f"The Train accuracy is: {train_acc}")
-# print(f"The Test accuracy is: {test_acc}")
+print(f"The Train Accuracy(final w based MAE) is: {train_acc}")
+print(f"The Test Accuracy(final w based MAE) is: {test_acc}")
 print()
 
 plt.plot(index_list, loss_list)
@@ -325,39 +332,69 @@ b_f = np.array([[1], [2], [3]])
 x_k_b_f = np.array([[1], [1], [1], [1]])
 W_f = jnp.array([[1.0, 1.0, 1.0, 1.0]])
 
-def new_loss(w,X,Y):
-    predis = jnp.dot(X,w.T)
-    return jnp.mean((jnp.sqrt(0.25*jnp.square(Y-predis)+1)-1))
+def loss_alpha(alpha,W):
+    w_grad = grad(loss)(W)
+    return loss(W-alpha*w_grad)
 
-def alpha_loss(alpha,w,X,Y):
-    gradient_e = grad(new_loss)(w,X,Y)
-    input = X - alpha * gradient_e
-    para_w_T = w.T
-    predict_result = jnp.dot(input,para_w_T)
-    return jnp.mean((jnp.sqrt(0.25*jnp.square(Y-predict_result)+1)-1))
+def loss_alpha_test(alpha,W):
+    w_grad = grad(loss_test)(W)
+    return loss_test(W-alpha*w_grad)
+
+
+# current_w_f = W_f
 
 loss_list_f = list()
 weight_list_f = list()
+learning_rate_lst = list()
 
-for index in tqdm(range(3000)):
+current_loss_lst = list()
+for index in range(10000):
     if index == 0:
         current_w_f = W_f
-    alpha_0 = 1.0
+        alpha_0 = 1.0
     # print(current_w_f)
-    gradient_f = grad(new_loss)(current_w_f,inputs,targets)
-    optimal = minimize(alpha_loss,alpha_0,args=(current_w_f,inputs,targets),method="BFGS",jac=grad(alpha_loss))
+    # w_grad
+    gradient_f = grad(loss)(current_w_f)
+    # Using the jacobian matrix to optimize
+    # Source :
+    optimal = minimize(loss_alpha,alpha_0,args=(current_w_f),method="BFGS",jac=grad(loss_alpha))
     current_alpha = optimal.x
+    # print(current_alpha)
     next_W = current_w_f - current_alpha * gradient_f
-    current_loss = new_loss(current_w_f,inputs,targets)
-    # print(f"difference: {abs(previous_loss-current_loss)}")
-    if current_loss < 2.5:
-        break
-    else:
+    # print(next_W)
+    current_loss = loss(current_w_f)
+    current_loss_lst.append(current_loss)
+    # print(f"difference: {current_loss}")
+    if current_loss >= 2.5:
         loss_list_f.append(current_loss)
         weight_list_f.append(next_W)
+        learning_rate_lst.append(current_alpha)
         current_w_f = next_W
+        # alpha_0 = current_alpha
+    else:
+        break
 
-print(len(loss_list_f))
+
+
+final_w_grad = weight_list_f[-1]
+alpha_final = learning_rate_lst[-1]
+
+def accuracy(targets,preds):
+    return jnp.mean(jnp.abs(targets - preds))
+
+train_acc_f = accuracy(targets,predict(final_w_grad))
+test_acc_f = accuracy(e_test_y, predict_test(final_w_grad))
+
+train_loss_f = loss_alpha(alpha_final,final_w_grad)
+test_loss_f = loss_alpha_test(alpha_final,final_w_grad)
+
+print("Here is the answer of question2 (f):")
+print(f"Iterration: {len(current_loss_lst)-1}")
+print(f"The final weight is: {weight_list_f[-1]}")
+print(f"The Train loss(final model) is: {train_loss_f}")
+print(f"The Test loss(final model) is: {test_loss_f}")
+print(f"The Train Accuracy(final w based MAE) is: {train_acc_f}")
+print(f"The Test Accuracy(final w based MAE) is: {test_acc_f}")
 
 index_array_d = [i for i in range(len(loss_list_f))]
 plt.plot()
