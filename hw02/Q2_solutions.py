@@ -1,17 +1,15 @@
 #####################################################################
 
 #####################################################################
-from math import log
 from jax._src.numpy.lax_numpy import square
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 import jax.numpy as jnp
-from jax import grad, random
+from jax import grad
 import jax as jax
 from scipy.optimize import minimize
-from scipy.optimize import rosen_der
 from tqdm import tqdm
 #####################################################################
 # Question2 a
@@ -79,6 +77,10 @@ print()
 # This equation is copies from word
 # α=((A∇f(x^((k) ) ))^T (Ax^((k) )-b)+((Ax^((k) )-b))^T A∇f(x^((k) ) ))/(〖2(A∇f(x^((k) ) ))〗^T A∇f(x^((k) ) ) )
 # 
+# Here are the source of this part
+# How to calculate the norm value ?
+# Source: https://numpy.org/doc/stable/reference/generated/numpy.linalg.norm.html
+
 #####################################################################
 A = np.array([[1, 0, 1, -1], [-1, 1, 0, 2], [0, -1, -2, 1]])
 b = np.array([[1], [2], [3]])
@@ -107,19 +109,24 @@ for index in range(9999):
     current_gradients_b = np.dot(A.T, (np.dot(A, x_k_b)-b))
 
     # This part of code is to update the learning rate
+    # Notice here the learning rate!
     if index ==0:
+        # The first situation index = 0 initialize
         current_learning_rate = 0.1
         learning_rate_lst.append([[current_learning_rate]])
         x_k_b_dict.append(np.array([[1], [1], [1], [1]]))
     else:
         # Updating the
         current_learning_rate = learning_rate_function(x_k_b)
+    # Updating the x value
     next_x_b = x_k_b - current_learning_rate * current_gradients_b
     # print(f"The next x: {next_x_b}")
+    # Getting the norm and check the condition
     gradient_norm_b = np.linalg.norm(current_gradients_b)
     # print(f"norm: {gradient_norm_b}")
     # print(f"the norm value: {gradient_norm_b}")
     if gradient_norm_b >= 0.001:
+        # Conditional satisfied store the data
         next_learning_rate = learning_rate_function(x_k_b)
         # print(f"learning rate: {next_learning_rate}") 
         norm_checker.append(gradient_norm_b)
@@ -223,6 +230,10 @@ print(f"last row Y_test: {Test_Y[-1].tolist()[0]}")
 print()
 #####################################################################
 # Question2 e
+# 
+# Here are the source of this part
+# JAX Tutorial 
+# Source: https://jax.readthedocs.io/en/latest/notebooks/autodiff_cookbook.html
 #####################################################################
 adding_one = np.array([[1] for i in range(len(Train_X))])
 # print(adding_one.shape)
@@ -230,9 +241,9 @@ new_Train_X = np.hstack((adding_one, Train_X))
 # inputs = jnp.array(Train_X)
 # print(new_Train_X.shape)
 # print(new_Train_X)
-inputs = jnp.array(new_Train_X)
-targets = jnp.array(Train_Y)
-W = jnp.array([[1.0, 1.0, 1.0, 1.0]])
+inputs = np.array(new_Train_X)
+targets = np.array(Train_Y)
+W = np.array([[1.0, 1.0, 1.0, 1.0]])
 # print(W.shape)
 # print(W.T.shape)
 
@@ -275,19 +286,19 @@ for index in range(99999):
         weight_list.append(current_w)
         W = current_w
 
-weight_array = jnp.array(weight_list)
+weight_array = np.array(weight_list)
 index_list = [i for i in range(len(loss_list))]
+# Getting the train loss
 train_loss = loss(weight_array[-1])
 # print(train_loss)
 
-
-
+# Adding one column to the training X
 adding_one_test = np.array([[1] for i in range(len(Test_X))])
 new_test_x = np.hstack((adding_one_test, Test_X))
-e_test_x = jnp.array(new_test_x)  
-e_test_y = jnp.array(Test_Y)
+e_test_x = np.array(new_test_x)  
+e_test_y = np.array(Test_Y)
 
-
+# This part of code is same as training difference is the dataset
 def predict_test(W):
     para_w_T = W.T
     predict_result = jnp.dot(e_test_x,para_w_T)
@@ -299,13 +310,17 @@ def loss_test(W):
     sqrt_result = jnp.sqrt(0.25*square_result+1)
     return jnp.mean((sqrt_result-1))
 
+# Using the last w value to calculate the test loss
 test_loss = loss_test(weight_array[-1])
 
 w_final = weight_array[-1]
 # Using MAE to calculate the accuracy
+# THis accuracy is based on the MAE 
+# Source: https://en.wikipedia.org/wiki/Mean_absolute_error
 def accuracy(targets,preds):
     return jnp.mean(jnp.abs(targets - preds))
 
+# Getting the accuracy result
 train_acc = accuracy(targets,predict(w_final))
 test_acc = accuracy(e_test_y, predict_test(w_final))
 
@@ -316,8 +331,8 @@ print(f"Iterration: {len(abs_lst)-1}")
 print(f"The final weight is: {weight_array[-1]}")
 print(f"The Train loss(final model) is: {train_loss}")
 print(f"The Test loss(final model) is: {test_loss}")
-print(f"The Train Accuracy(final w based MAE) is: {train_acc}")
-print(f"The Test Accuracy(final w based MAE) is: {test_acc}")
+# print(f"The Train Accuracy(final w based MAE) is: {train_acc}")
+# print(f"The Test Accuracy(final w based MAE) is: {test_acc}")
 print()
 
 plt.plot(index_list, loss_list)
@@ -330,7 +345,11 @@ print()
 A_f = np.array([[1, 0, 1, -1], [-1, 1, 0, 2], [0, -1, -2, 1]])
 b_f = np.array([[1], [2], [3]])
 x_k_b_f = np.array([[1], [1], [1], [1]])
-W_f = jnp.array([[1.0, 1.0, 1.0, 1.0]])
+W_f = np.array([[1.0, 1.0, 1.0, 1.0]])
+
+loss_list_f = list()
+weight_list_f = list()
+learning_rate_lst = []
 
 def loss_alpha(alpha,W):
     w_grad = grad(loss)(W)
@@ -339,13 +358,6 @@ def loss_alpha(alpha,W):
 def loss_alpha_test(alpha,W):
     w_grad = grad(loss_test)(W)
     return loss_test(W-alpha*w_grad)
-
-
-# current_w_f = W_f
-
-loss_list_f = list()
-weight_list_f = list()
-learning_rate_lst = list()
 
 current_loss_lst = list()
 for index in range(10000):
