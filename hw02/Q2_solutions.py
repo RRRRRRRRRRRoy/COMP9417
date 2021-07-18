@@ -73,10 +73,10 @@ print()
 # Question2 b
 # From this question we can define A and b in the first step
 # You can find the final equation of alpha from the report
-# 
+#
 # This equation is copies from word
 # α=((A∇f(x^((k) ) ))^T (Ax^((k) )-b)+((Ax^((k) )-b))^T A∇f(x^((k) ) ))/(〖2(A∇f(x^((k) ) ))〗^T A∇f(x^((k) ) ) )
-# 
+#
 # Here are the source of this part
 # How to calculate the norm value ?
 # Source: https://numpy.org/doc/stable/reference/generated/numpy.linalg.norm.html
@@ -87,11 +87,13 @@ b = np.array([[1], [2], [3]])
 x_k_b = np.array([[1], [1], [1], [1]])
 
 # Wring the final equation to the function
+
+
 def learning_rate_function(x_k_b):
-    A_x_k_b = np.dot(A,x_k_b)-b
-    A_f_x_k = np.dot(A,np.dot(A.T,A_x_k_b))
-    Top_line = np.dot((A_f_x_k.T),A_x_k_b) + np.dot((A_x_k_b.T),A_f_x_k)
-    Bottom_line = 2 * np.dot((A_f_x_k.T),A_f_x_k)
+    A_x_k_b = np.dot(A, x_k_b)-b
+    A_f_x_k = np.dot(A, np.dot(A.T, A_x_k_b))
+    Top_line = np.dot((A_f_x_k.T), A_x_k_b) + np.dot((A_x_k_b.T), A_f_x_k)
+    Bottom_line = 2 * np.dot((A_f_x_k.T), A_f_x_k)
     learning_rate_result = Top_line/Bottom_line
     return learning_rate_result
 
@@ -110,7 +112,7 @@ for index in range(9999):
 
     # This part of code is to update the learning rate
     # Notice here the learning rate!
-    if index ==0:
+    if index == 0:
         # The first situation index = 0 initialize
         current_learning_rate = 0.1
         learning_rate_lst.append([[current_learning_rate]])
@@ -128,7 +130,7 @@ for index in range(9999):
     if gradient_norm_b >= 0.001:
         # Conditional satisfied store the data
         next_learning_rate = learning_rate_function(x_k_b)
-        # print(f"learning rate: {next_learning_rate}") 
+        # print(f"learning rate: {next_learning_rate}")
         norm_checker.append(gradient_norm_b)
         x_k_b_dict.append(next_x_b)
         learning_rate_lst.append(next_learning_rate.tolist())
@@ -165,7 +167,8 @@ for item in learning_rate_lst:
 
 index_array_d = [i for i in range(len(pure_learning_rate_list_b))]
 plt.plot()
-plt.plot(index_array_d,pure_learning_rate_list_b[:len(pure_learning_rate_list_b)])
+plt.plot(index_array_d, pure_learning_rate_list_b[:len(
+    pure_learning_rate_list_b)])
 plt.show()
 #####################################################################
 # Question2 d
@@ -185,6 +188,8 @@ Total_Y = puring_data[:, 3:4]
 # print(Total_X.shape)
 # print(Total_Y.shape)
 
+# How to use the MinMaxScaler
+# Source: https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.MinMaxScaler.html
 Q2_d_min_max_scalar = MinMaxScaler()
 Q2_d_x_min_max = Q2_d_min_max_scalar.fit_transform(Total_X)
 
@@ -230,9 +235,9 @@ print(f"last row Y_test: {Test_Y[-1].tolist()[0]}")
 print()
 #####################################################################
 # Question2 e
-# 
+#
 # Here are the source of this part
-# JAX Tutorial 
+# JAX Tutorial
 # Source: https://jax.readthedocs.io/en/latest/notebooks/autodiff_cookbook.html
 #####################################################################
 adding_one = np.array([[1] for i in range(len(Train_X))])
@@ -248,16 +253,20 @@ W = np.array([[1.0, 1.0, 1.0, 1.0]])
 # print(W.T.shape)
 
 # W_T * inputs
+
+
 def predict(W):
-  predict_result = jnp.dot(inputs,W.T)
-  return predict_result
+    predict_result = jnp.dot(inputs, W.T)
+    return predict_result
 
 # This is the loss function in the 2e
+
+
 def loss(W):
-  preds = predict(W)
-  square_result = jnp.square(targets-preds)
-  sqrt_result = jnp.sqrt(0.25*square_result+1)
-  return jnp.mean((sqrt_result-1))
+    preds = predict(W)
+    square_result = jnp.square(targets-preds)
+    sqrt_result = jnp.sqrt(0.25*square_result+1)
+    return jnp.mean((sqrt_result-1))
 
 
 predict_result = predict(W)
@@ -274,7 +283,7 @@ weight_list = list()
 abs_lst = list()
 previous_loss = loss_result
 for index in range(99999):
-    current_w = W -learning_rate * grad(loss)(W)
+    current_w = W - learning_rate * grad(loss)(W)
     current_loss = loss(current_w)
     # print(f"difference: {abs(previous_loss-current_loss)}")
     abs_lst.append(abs(previous_loss-current_loss))
@@ -295,14 +304,17 @@ train_loss = loss(weight_array[-1])
 # Adding one column to the training X
 adding_one_test = np.array([[1] for i in range(len(Test_X))])
 new_test_x = np.hstack((adding_one_test, Test_X))
-e_test_x = np.array(new_test_x)  
+e_test_x = np.array(new_test_x)
 e_test_y = np.array(Test_Y)
 
 # This part of code is same as training difference is the dataset
+
+
 def predict_test(W):
     para_w_T = W.T
-    predict_result = jnp.dot(e_test_x,para_w_T)
+    predict_result = jnp.dot(e_test_x, para_w_T)
     return predict_result
+
 
 def loss_test(W):
     preds = predict_test(W)
@@ -310,18 +322,22 @@ def loss_test(W):
     sqrt_result = jnp.sqrt(0.25*square_result+1)
     return jnp.mean((sqrt_result-1))
 
+
 # Using the last w value to calculate the test loss
 test_loss = loss_test(weight_array[-1])
 
 w_final = weight_array[-1]
 # Using MAE to calculate the accuracy
-# THis accuracy is based on the MAE 
+# THis accuracy is based on the MAE
 # Source: https://en.wikipedia.org/wiki/Mean_absolute_error
-def accuracy(targets,preds):
+
+
+def accuracy(targets, preds):
     return jnp.mean(jnp.abs(targets - preds))
 
+
 # Getting the accuracy result
-train_acc = accuracy(targets,predict(w_final))
+train_acc = accuracy(targets, predict(w_final))
 test_acc = accuracy(e_test_y, predict_test(w_final))
 
 
@@ -351,13 +367,16 @@ loss_list_f = list()
 weight_list_f = list()
 learning_rate_lst = []
 
-def loss_alpha(alpha,W):
+
+def loss_alpha(alpha, W):
     w_grad = grad(loss)(W)
     return loss(W-alpha*w_grad)
 
-def loss_alpha_test(alpha,W):
+
+def loss_alpha_test(alpha, W):
     w_grad = grad(loss_test)(W)
     return loss_test(W-alpha*w_grad)
+
 
 current_loss_lst = list()
 for index in range(10000):
@@ -368,8 +387,9 @@ for index in range(10000):
     # w_grad
     gradient_f = grad(loss)(current_w_f)
     # Using the jacobian matrix to optimize
-    # Source :
-    optimal = minimize(loss_alpha,alpha_0,args=(current_w_f),method="BFGS",jac=grad(loss_alpha))
+    # Source: https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html
+    optimal = minimize(loss_alpha, alpha_0, args=(
+        current_w_f), method="BFGS", jac=grad(loss_alpha))
     current_alpha = optimal.x
     # print(current_alpha)
     next_W = current_w_f - current_alpha * gradient_f
@@ -386,20 +406,26 @@ for index in range(10000):
     else:
         break
 
-
-
+# Getting the last value with the same index
 final_w_grad = weight_list_f[-1]
 alpha_final = learning_rate_lst[-1]
 
-def accuracy(targets,preds):
+# Here accuracy is based on MAE
+
+
+def accuracy(targets, preds):
     return jnp.mean(jnp.abs(targets - preds))
 
-train_acc_f = accuracy(targets,predict(final_w_grad))
+
+# getting the acc
+train_acc_f = accuracy(targets, predict(final_w_grad))
 test_acc_f = accuracy(e_test_y, predict_test(final_w_grad))
 
-train_loss_f = loss_alpha(alpha_final,final_w_grad)
-test_loss_f = loss_alpha_test(alpha_final,final_w_grad)
+# getting the loss
+train_loss_f = loss_alpha(alpha_final, final_w_grad)
+test_loss_f = loss_alpha_test(alpha_final, final_w_grad)
 
+# Printing the final result
 print("Here is the answer of question2 (f):")
 print(f"Iterration: {len(current_loss_lst)-1}")
 print(f"The final weight is: {weight_list_f[-1]}")
@@ -410,5 +436,5 @@ print(f"The Test Accuracy(final w based MAE) is: {test_acc_f}")
 
 index_array_d = [i for i in range(len(loss_list_f))]
 plt.plot()
-plt.plot(index_array_d,loss_list_f[:len(loss_list_f)])
+plt.plot(index_array_d, loss_list_f[:len(loss_list_f)])
 plt.show()
