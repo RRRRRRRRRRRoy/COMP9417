@@ -2,6 +2,7 @@
 # This is the code for COMP9417 HW02 Question1
 # Some of the annotation is the checkpoint of each part of code
 # Author is z5241868
+# The encironment is Ubuntu 18.4
 #####################################################################
 from sklearn.metrics import log_loss
 from sklearn.linear_model import LogisticRegression
