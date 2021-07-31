@@ -1,12 +1,12 @@
 import numpy as np
 
 
-def load_data(dataset_name:str='train', onehot:bool=False, shuffle:bool=True, seed:int=10):
+def load_data(dataset_name: str = 'train', onehot: bool = False, shuffle: bool = True, seed: int = 10):
     """
     * dataset_name: 'train'(default, 61876 rows), 'test', or 'sampleSubmisstion';
     * return features(93 features), labels(9 classes in one-hot), ids, names of each coloums.
     """
-    f = open(f'data/{dataset_name}.csv')
+    f = open("D:\{dataset_name}")
     data = f.readlines()
     f.close()
     cols = data.pop(0)
@@ -23,7 +23,8 @@ def load_data(dataset_name:str='train', onehot:bool=False, shuffle:bool=True, se
             labels.append(current_label)
     else:
         labels = labels_num
-    features, labels, cols = np.array(features,dtype="float"), np.array(labels), np.array(cols)
+    features, labels, cols = np.array(
+        features, dtype="float"), np.array(labels), np.array(cols)
     if shuffle:
         shuffleIndex = np.arange(labels.shape[0])
         np.random.seed(seed)
@@ -42,8 +43,6 @@ def loss(y_ture, log_prob):
     for i in range(N):
         result += log_prob[i][y_ture[i] - 1]
     return -result / N
-        
-
 
 
 if __name__ == '__main__':
