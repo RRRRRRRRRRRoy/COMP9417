@@ -4,6 +4,11 @@
 # Using Otto Product dataset to do the training and testing
 # Data Download link
 # Source: https://www.kaggle.com/c/otto-group-product-classification-challenge/data
+#
+# This is a old question you can also find some information for other guys resources
+# Source: https://github.com/wepe/Kaggle-Solution/tree/master/Otto%20Group%20Product%20Classification%20Challenge
+# Source: https://github.com/amaltarghi/Otto-Group-Product-Classification-Challenge
+# Source: https://github.com/zhouhaozeng/kaggle-otto-classification
 ##############################################################################################################################
 ##############################################################################################################################
 
@@ -14,6 +19,8 @@ from matplotlib.pyplot import MultipleLocator
 
 # Using pandas reading data
 # Here change the location to your data location
+# Downloading from Kaggle
+# Source: https://www.kaggle.com/c/otto-group-product-classification-challenge/data
 raw_train_data = pd.read_csv("D:\\train.csv")
 raw_test_data = pd.read_csv("D:\\test.csv")
 
