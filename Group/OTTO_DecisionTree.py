@@ -29,7 +29,7 @@ from sklearn.metrics import log_loss
 # Using the extra 11878 data to do the testing
 ##############################################################################################################################
 # Using pandas reading data
-# Here change the location to your data location
+# !!!!!!!!!!!!!!! Here change the location to your data location !!!!!!!!!!!!!!!
 # Downloading from Kaggle
 # Source: https://www.kaggle.com/c/otto-group-product-classification-challenge/data
 raw_train_data = pd.read_csv("D:\\train.csv")

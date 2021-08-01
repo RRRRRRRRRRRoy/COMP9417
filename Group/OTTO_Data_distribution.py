@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 from matplotlib.pyplot import MultipleLocator
 
 # Using pandas reading data
-# Here change the location to your data location
+# !!!!!!!!!!!!!!! Here change the location to your data location !!!!!!!!!!!!!!!
 # Downloading from Kaggle
 # Source: https://www.kaggle.com/c/otto-group-product-classification-challenge/data
 raw_train_data = pd.read_csv("D:\\train.csv")
