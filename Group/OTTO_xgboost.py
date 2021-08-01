@@ -210,23 +210,23 @@ plt.show()
 # Generating the csv result
 ##############################################################################################################################
 # Valid_x = np.array(raw_test_data.iloc[:, 1:94])
-# Total_x = np.array(Train_data.iloc[:,0:93])
-# Total_y = np.array(Train_data.iloc[:,93:94])
+# Total_x = np.array(Train_data.iloc[:, 0:93])
+# Total_y = np.array(Train_data.iloc[:, 93:94])
 # print(Total_x.shape)
 # print(Total_y.shape)
 
 # Total_aaa = list()
 # for item in Total_y:
 #     Total_aaa.append(int(item[-1][-1])-1)
-# Total_training = xgb.DMatrix(Total_x,Total_aaa)
+# Total_training = xgb.DMatrix(Total_x, Total_aaa)
 # Total_test = xgb.DMatrix(Valid_x)
 # total_xgb = xgb.train(params, Total_training, 200)
-# total_prediction = gbm.predict(Total_test)
+# total_prediction = total_xgb.predict(Total_test)
 
-# submission = pd.DataFrame({ "id": raw_test_data["id"]})
+# submission = pd.DataFrame({"id": raw_test_data["id"]})
 # i = 0
-# for num in range(1,10):
+# for num in range(1, 10):
 #     col_name = str("Class_{}".format(num))
-#     submission[col_name] = total_prediction[:,i]
+#     submission[col_name] = total_prediction[:, i]
 #     i = i + 1
 # submission.to_csv('./otto.csv', index=False)
