@@ -193,6 +193,7 @@ plt.title('The Prediction VS Ground Truth')
 plt.xlabel('Classes')
 plt.ylabel('Number')
 plt.legend()
+plt.savefig('./xgboost_comparison.jpg')
 plt.show()
 
 ##############################################################################################################################
@@ -203,6 +204,7 @@ confusion_xgboost = confusion_matrix(result_list, ground_true_label_Y)
 plt.figure(figsize=(8, 8))
 plt.title('XGBoost Confusion Matrix')
 plt.imshow(confusion_xgboost, cmap=plt.cm.Blues)
+plt.savefig('./xgboost_confusion.jpg')
 plt.show()
 
 
@@ -229,4 +231,4 @@ plt.show()
 #     col_name = str("Class_{}".format(num))
 #     submission[col_name] = total_prediction[:, i]
 #     i = i + 1
-# submission.to_csv('./otto.csv', index=False)
+# submission.to_csv('./submission.csv', index=False)

@@ -184,6 +184,7 @@ l4 = plt.plot(Ada_result_dict.keys(), Ada_result_dict.values(),
 plt.title('The Prediction VS Ground Truth')
 plt.xlabel('Classes')
 plt.ylabel('Number of Samples')
+plt.savefig('./Adaboost_DT_comparison.jpg')
 plt.show()
 
 ##############################################################################################################################
@@ -195,6 +196,7 @@ DT_Confusion = confusion_matrix(DT_norm_predict, Test_Y)
 plt.figure(figsize=(8, 8))
 plt.title('Decision Tree')
 plt.imshow(DT_Confusion, cmap=plt.cm.Blues)
+plt.savefig('./DT_Classifier_confusion.jpg')
 plt.show()
 
 # Draw confusion matrix for Adaboost Decision Tree model
@@ -202,6 +204,7 @@ Ada_DT_Confusion = confusion_matrix(DT_Ada_predict, Test_Y)
 plt.figure(figsize=(8, 8))
 plt.title('Adaboosted Decision Tree')
 plt.imshow(Ada_DT_Confusion, cmap=plt.cm.Blues)
+plt.savefig('./Adaboost_DT_Classifier_confusion.jpg')
 plt.show()
 
 # Draw confusion matrix for Adaboost model
@@ -209,4 +212,5 @@ Ada_Confusion = confusion_matrix(Ada_Model_predict, Test_Y)
 plt.figure(figsize=(8, 8))
 plt.title('Adaboosted Classifier')
 plt.imshow(Ada_Confusion, cmap=plt.cm.Blues)
+plt.savefig('./Adaboost_Classifier_confusion.jpg')
 plt.show()

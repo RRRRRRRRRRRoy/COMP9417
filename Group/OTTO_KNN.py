@@ -162,6 +162,7 @@ plt.title('The Prediction VS Ground Truth')
 plt.xlabel('Classes')
 plt.ylabel('Number')
 plt.legend()
+plt.savefig('./KNN_comparison.jpg')
 plt.show()
 ##############################################################################################################################
 # How to draw the confusion matirx
@@ -173,4 +174,5 @@ print(confusion_KNN)
 plt.figure(figsize=(8, 8))
 plt.title('K-Nearest Neighbour')
 plt.imshow(confusion_KNN, cmap=plt.cm.Blues)
+plt.savefig('./KNN_confusion.jpg')
 plt.show()

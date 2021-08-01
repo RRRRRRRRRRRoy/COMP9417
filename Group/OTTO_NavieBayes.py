@@ -199,6 +199,7 @@ plt.title('The Prediction VS Ground Truth')
 plt.xlabel('Classes')
 plt.ylabel('Number')
 plt.legend()
+plt.savefig('./NB_comparison.jpg')
 plt.show()
 
 ##############################################################################################################################
@@ -212,16 +213,19 @@ confusion_BNB = confusion_matrix(Y_pred_BNB, Test_Y)
 plt.figure(figsize=(4, 4))
 plt.title('Gaussian Naive Bayesian')
 plt.imshow(confusion_GNB, cmap=plt.cm.Blues)
+plt.savefig('./GNB_confusion.jpg')
 plt.show()
 
 # Draw the confusion matrix for Multinomial
 plt.figure(figsize=(4, 4))
 plt.title('Multinomial Naive Bayesian')
 plt.imshow(confusion_MNB, cmap=plt.cm.Blues)
+plt.savefig('./MNB_confusion.jpg')
 plt.show()
 
 # Draw the confusion matrix for Bernoull
 plt.figure(figsize=(4, 4))
 plt.title('Bernoull Naive Bayesian')
 plt.imshow(confusion_BNB, cmap=plt.cm.Blues)
+plt.savefig('./BNB_confusion.jpg')
 plt.show()
