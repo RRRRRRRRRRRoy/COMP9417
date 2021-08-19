@@ -135,13 +135,19 @@ new_y_data = list()
 
 for index in range(Bootstrap_size):
     Bernoulli_result = np.random.binomial(n=1, p=equation_p_i).squeeze(1)
-    new_y_data.append(Bernoulli_result)
+    new_y_data.append(np.array([Bernoulli_result]))
 
 for index in range(Bootstrap_size):
     # The training data X didn't change
-    X_4_1b = X
-    # This y is changed to the Bernoulli_result in the previous
-    y_4_1b = new_y_data[index]
+    random_list = np.random.randint(0, 250, 250)
+    X_4_1b = np.zeros_like(X)
+    y_4_1b = np.zeros_like(np.array(new_y_data))
+    for index in range(250):
+        boostrap_temp_X = X[random_list[index]]
+        boostrap_temp_Y = new_y_data[random_list[index]]
+        X_4_1b[index] = boostrap_temp_X
+        y_4_1b[index] = boostrap_temp_Y
+
     model_4_1b = LogisticRegression(
         C=1000, solver='liblinear', penalty='l1')
     model_4_1b.fit(X_4_1b, y_4_1b.ravel())
@@ -240,6 +246,7 @@ Jacknife_coef = logisticRegression_1c_full_model.coef_
 
 # Here is to use jackknife method to solve
 for index in range(num_X):
+    # Using the other data to training like the previous hw cross-validation
     X_4_1c = np.delete(X, index, axis=0)
     y_4_1c = np.delete(y, index, axis=0)
     model_jackknife = LogisticRegression(
@@ -260,6 +267,7 @@ for item in coef_list_1c:
         purify_coeffcient_list_1c.append(i)
 print(np.array(purify_coeffcient_list_1c).shape)
 
+# https://numpy.org/doc/stable/reference/generated/numpy.std.html
 means_1c = np.mean(purify_coeffcient_list_1c, axis=0)
 stdrs_1c = np.std(purify_coeffcient_list_1c, axis=0, ddof=1)
 sqrt_square_stdrs = 1.645 * np.sqrt(np.square(stdrs_1c)/num_X)
@@ -349,6 +357,10 @@ def calculator_1d(lower_boundry, upper_boundry):
     return False_Positive, False_Negative
 
 
-calculator_1d(lower_1a, upper_1a)
-calculator_1d(lower_1b, upper_1b)
-calculator_1d(lower_1c, upper_1c)
+FPa, FNa = calculator_1d(lower_1a, upper_1a)
+FPb, FNb = calculator_1d(lower_1b, upper_1b)
+FPc, FNc = calculator_1d(lower_1c, upper_1c)
+
+print(f"FP of Question a {FPa[0]}, FN of Question a {FNa[0]}")
+print(f"FP of Question a {FPb[0]}, FN of Question a {FNb[0]}")
+print(f"FP of Question a {FPc[0]}, FN of Question a {FNc[0]}")
