@@ -1,7 +1,9 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
+################################################################
+# If you want to test the code change to your own data location
+################################################################
 X = np.array(pd.read_csv("./Final_Exam/Data/Q3X.csv"))
 y = np.array(pd.read_csv("./Final_Exam/Data/Q3y.csv"))
 b = np.array([np.array([1]) for i in range(len(X))])
@@ -11,7 +13,6 @@ b = np.array([np.array([1]) for i in range(len(X))])
 # Question 3 a
 ####################################################################################################################################
 ####################################################################################################################################
-
 # This part of code is from the pseudo-code
 
 
@@ -34,6 +35,9 @@ def perceptron(X, y, max_iter=100):
     return w_0, counter
 
 
+# This part of code is from Tutorial NeuralLearning
+# you can find the same code from the moodle
+# https://moodle.telt.unsw.edu.au/mod/folder/view.php?id=3975383
 def plot_perceptron(ax, X, y, w):
     pos_points = X[np.where(y == 1)[0]]
     neg_points = X[np.where(y == -1)[0]]
@@ -51,6 +55,8 @@ def plot_perceptron(ax, X, y, w):
     ax.axis('equal')
 
 
+# This part of code is from the exam instruction
+# https: // moodle.telt.unsw.edu.au/mod/folder/view.php?id = 4062576
 w, nmb_iter = perceptron(X, y, max_iter=100)  # your trained perceptron
 fig, ax = plt.subplots()
 plot_perceptron(ax, X, y, w)  # from neural learning lab
@@ -58,17 +64,56 @@ ax.set_title(f"w={w}, iterations={nmb_iter}")
 plt.savefig("name.png", dpi=300)  # if you want to save your plot as a png
 plt.show()
 
-####################################################################################################################################
-####################################################################################################################################
-# Question 3 b
-####################################################################################################################################
-####################################################################################################################################
-
-alpha = np.array([np.array([0]) for i in range(len(X))])
-
 
 ####################################################################################################################################
 ####################################################################################################################################
 # Question 3 c
 ####################################################################################################################################
 ####################################################################################################################################
+
+
+def dual_perceptron(X, y, max_iter=100):
+    np.random.seed(1)
+    # your code here
+    eta = 1
+    r = 2
+    w = np.zeros((3, 1))
+    # Notice here is the same length with y
+    length_y = len(y)
+    zero_size = (length_y, 1)
+    I = np.zeros(zero_size)
+    counter = 0
+    for _ in range(max_iter):
+        counter = counter + 1
+        flag = 0
+        for i in range(len(y)):
+            w_T = w.T
+            # change to same sime to do the dot
+            current_x = X[i].reshape(3, 1)
+            I_r = I[i]*r
+            y_W_x = y[i] * w_T.dot(current_x)
+            y_W_x_I_r = y_W_x + I_r
+            if y_W_x_I_r <= 0:
+                # Adding constraint for w
+                y_X = y[i] * X[i]
+                w[:, 0] += y_X
+                # Setting the I
+                I[i] = 1
+                # Setting the flag
+                flag = 1
+        # Flag break
+        # Flag = 0 not in the iteration just break
+        if flag == 0:
+            return w, counter
+    return w, counter
+
+
+# This part of code is from the exam instruction
+# https: // moodle.telt.unsw.edu.au/mod/folder/view.php?id = 4062576
+w, nmb_iter = dual_perceptron(X, y, max_iter=100)
+w = w[:, 0]
+fig, ax = plt.subplots()
+plot_perceptron(ax, X, y, w)  # from neural learning lab
+ax.set_title(f"w={w}, iterations={nmb_iter}")
+plt.savefig("Q3c.png", dpi=300)  # if you want to save your plot as a png
+plt.show()

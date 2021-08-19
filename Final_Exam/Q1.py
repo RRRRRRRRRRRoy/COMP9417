@@ -3,6 +3,11 @@ import pandas as pd
 from sklearn.linear_model import LogisticRegression
 import matplotlib.pyplot as plt
 
+################################################################
+# If you want to test the code change to your own data location
+# Also some of these code can be found on my own github hw2
+# SOurce： https://github.com/RRRRRRRRRRRoy/COMP9417
+################################################################
 
 Total_data = pd.read_csv("./Final_Exam/Data/Q1.csv")
 X = np.array(Total_data.iloc[:, 1: 31])
