@@ -13,6 +13,8 @@ import itertools
 # For X in data4 which length is 7
 # Therefore, the total situation in dataset X which is 2^7=128.
 # This is because the current feature only has 0 or 1 which are 2 situations
+# This part of data is from the exam instruction
+# https: // moodle.telt.unsw.edu.au/mod/folder/view.php?id = 4062576
 data1 = ["010", "011", "100", "111"]
 data2 = ["011", "100", "110", "111"]
 data3 = ["0100", "0101", "0110", "1000", "1100", "1101", "1110", "1111"]
