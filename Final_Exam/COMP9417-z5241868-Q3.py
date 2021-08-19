@@ -61,7 +61,8 @@ w, nmb_iter = perceptron(X, y, max_iter=100)  # your trained perceptron
 fig, ax = plt.subplots()
 plot_perceptron(ax, X, y, w)  # from neural learning lab
 ax.set_title(f"w={w}, iterations={nmb_iter}")
-plt.savefig("name.png", dpi=300)  # if you want to save your plot as a png
+# if you want to save your plot as a png
+plt.savefig("./Final_Exam/Q3_a.png", dpi=300)
 plt.show()
 
 
@@ -72,7 +73,7 @@ plt.show()
 ####################################################################################################################################
 
 
-def dual_perceptron(X, y, max_iter=100):
+def perceptron_C(X, y, max_iter=100):
     np.random.seed(1)
     # your code here
     eta = 1
@@ -86,7 +87,7 @@ def dual_perceptron(X, y, max_iter=100):
     for _ in range(max_iter):
         counter = counter + 1
         flag = 0
-        for i in range(len(y)):
+        for i in range(length_y):
             w_T = w.T
             # change to same sime to do the dot
             current_x = X[i].reshape(3, 1)
@@ -110,10 +111,11 @@ def dual_perceptron(X, y, max_iter=100):
 
 # This part of code is from the exam instruction
 # https: // moodle.telt.unsw.edu.au/mod/folder/view.php?id = 4062576
-w, nmb_iter = dual_perceptron(X, y, max_iter=100)
+w, nmb_iter = perceptron_C(X, y, max_iter=100)
 w = w[:, 0]
 fig, ax = plt.subplots()
 plot_perceptron(ax, X, y, w)  # from neural learning lab
 ax.set_title(f"w={w}, iterations={nmb_iter}")
-plt.savefig("Q3c.png", dpi=300)  # if you want to save your plot as a png
+# if you want to save your plot as a png
+plt.savefig("./Final_Exam/Q3_c.png", dpi=300)
 plt.show()
