@@ -199,9 +199,17 @@ for m in range(30):
     # Here you can change the plot you want to check training and testing
     label_name = 'M='+str(M)
     plt.plot(train_loss_list, label=label_name, marker=',')
-    plt.plot(test_loss_list, label=label_name, marker=',')
+    # plt.plot(test_loss_list, label=label_name, marker=',')
     # Collect the current loss into the total list
     train_loss_list_all.append(train_loss_list)
     test_loss_list_all.append(test_loss_list)
+
+plt.title("Training total loss")
 plt.legend(loc='best')
 plt.show()
+
+for index in range(4, 30, 5):
+    Train_loss = np.mean(train_loss_list_all[index])
+    Test_loss = np.mean(test_loss_list_all[index])
+    print(
+        f"When m = {index + 1}, Train_loss={Train_loss}, Test_loss={Test_loss}")
