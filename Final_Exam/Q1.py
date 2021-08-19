@@ -114,7 +114,6 @@ print(
 np.random.seed(20)
 Bootstrap_size = 500
 
-
 logisticRegression_1b_full_model = LogisticRegression(
     C=1000, solver='liblinear', penalty='l1')
 logisticRegression_1b_full_model.fit(X, y.ravel())
@@ -130,21 +129,17 @@ equation_p_i = Numerator_part_p_i / denominator_part_p_i
 
 # This list is to store the coef data
 coefficient_list_1b = list()
-# This list is to store the data y
-new_y_data = list()
 
-for index in range(Bootstrap_size):
-    Bernoulli_result = np.random.binomial(n=1, p=equation_p_i).squeeze(1)
-    new_y_data.append(np.array([Bernoulli_result]))
-
-for index in range(Bootstrap_size):
+# Here is the result of bootstraping
+for index1 in range(Bootstrap_size):
     # The training data X didn't change
     random_list = np.random.randint(0, 250, 250)
+    Bernoulli_result = np.random.binomial(n=1, p=equation_p_i)
     X_4_1b = np.zeros_like(X)
-    y_4_1b = np.zeros_like(np.array(new_y_data))
+    y_4_1b = np.zeros_like(Bernoulli_result)
     for index in range(250):
         boostrap_temp_X = X[random_list[index]]
-        boostrap_temp_Y = new_y_data[random_list[index]]
+        boostrap_temp_Y = Bernoulli_result[random_list[index]]
         X_4_1b[index] = boostrap_temp_X
         y_4_1b[index] = boostrap_temp_Y
 
@@ -326,7 +321,7 @@ plt.show()
 
 
 def calculator_1d(lower_boundry, upper_boundry):
-    # These are the parameter provided by the instruction
+    # These are the parameter and code provided by the instruction
     np.random.seed(125)
     p = 30
     k = 8
@@ -349,11 +344,15 @@ def calculator_1d(lower_boundry, upper_boundry):
     # print(betas[index_eqls_1] == 0)
     # print(np.where(betas[index_eqls_1] == 0)[0])
     # Finding the positive location
-    False_Positive = np.where(betas[index_eqls_1] == 0)[0].shape
+    False_Positive_index = np.where(betas[index_eqls_1] == 0)
+    False_Positive_value = False_Positive_index[0]
+    False_Positive = False_Positive_value.shape
     # Finding the location which CI_array value is 0 ----> out of CI range
     index_eqls_0 = np.where(CI_array == 0)
     # Finding the negative location
-    False_Negative = np.where(betas[index_eqls_0] != 0)[0].shape
+    False_Negative_index = np.where(betas[index_eqls_0] != 0)
+    False_Negative_value = False_Negative_index[0]
+    False_Negative = False_Negative_value.shape
     return False_Positive, False_Negative
 
 
@@ -362,5 +361,5 @@ FPb, FNb = calculator_1d(lower_1b, upper_1b)
 FPc, FNc = calculator_1d(lower_1c, upper_1c)
 
 print(f"FP of Question a {FPa[0]}, FN of Question a {FNa[0]}")
-print(f"FP of Question a {FPb[0]}, FN of Question a {FNb[0]}")
-print(f"FP of Question a {FPc[0]}, FN of Question a {FNc[0]}")
+print(f"FP of Question b {FPb[0]}, FN of Question b {FNb[0]}")
+print(f"FP of Question c {FPc[0]}, FN of Question c {FNc[0]}")
